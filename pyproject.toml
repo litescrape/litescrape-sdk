@@ -7,12 +7,15 @@ name = "litescrape-sdk"
 dynamic = ["version"]
 description = "Python SDK for the Litescrape API: validated, batched, retrying calls to search, maps, and reviews endpoints."
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.10"
 authors = [{ name = "Litescraper", email = "support@litescrape.com" }]
 keywords = ["litescrape", "serp", "google", "maps", "reviews", "scraping", "api"]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
+  "License :: OSI Approved :: MIT License",
   "Typing :: Typed",
 ]
 dependencies = [
