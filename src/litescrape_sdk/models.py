@@ -6,6 +6,16 @@ from typing import Annotated, Any, ClassVar, Literal
 
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, TypeAdapter, model_validator
 
+from ._app_store import AppleProductRequest, AppleReviewsRequest, AppleSearchRequest
+from ._play import (
+    PlayAppsRequest,
+    PlayBooksRequest,
+    PlayGamesRequest,
+    PlayMoviesRequest,
+    PlayProductRequest,
+    PlayReviewsRequest,
+)
+
 
 def _as_query(value: Any) -> str:
     if value is True:
@@ -541,6 +551,69 @@ class AppleMapsReviews(ScrapeRequest):
     locale: str | None = None
 
 
+class GooglePlayApps(ScrapeRequest, PlayAppsRequest):
+    """Alpha. GET /api/google/play/apps. See the Store API reference for field availability."""
+
+    path: ClassVar[str] = "/api/google/play/apps"
+    endpoint: Literal["google_play_apps"] = "google_play_apps"
+
+
+class GooglePlayGames(ScrapeRequest, PlayGamesRequest):
+    """Alpha. GET /api/google/play/games. See the Store API reference for field availability."""
+
+    path: ClassVar[str] = "/api/google/play/games"
+    endpoint: Literal["google_play_games"] = "google_play_games"
+
+
+class GooglePlayBooks(ScrapeRequest, PlayBooksRequest):
+    """Alpha. GET /api/google/play/books. See the Store API reference for field availability."""
+
+    path: ClassVar[str] = "/api/google/play/books"
+    endpoint: Literal["google_play_books"] = "google_play_books"
+
+
+class GooglePlayMovies(ScrapeRequest, PlayMoviesRequest):
+    """Alpha. GET /api/google/play/movies. See the Store API reference for field availability."""
+
+    path: ClassVar[str] = "/api/google/play/movies"
+    endpoint: Literal["google_play_movies"] = "google_play_movies"
+
+
+class GooglePlayProduct(ScrapeRequest, PlayProductRequest):
+    """Alpha. GET /api/google/play/product. See the Store API reference for field availability."""
+
+    path: ClassVar[str] = "/api/google/play/product"
+    endpoint: Literal["google_play_product"] = "google_play_product"
+
+
+class GooglePlayReviews(ScrapeRequest, PlayReviewsRequest):
+    """Alpha. GET /api/google/play/reviews. See the Store API reference for field availability."""
+
+    path: ClassVar[str] = "/api/google/play/reviews"
+    endpoint: Literal["google_play_reviews"] = "google_play_reviews"
+
+
+class AppleAppStoreSearch(ScrapeRequest, AppleSearchRequest):
+    """Alpha. GET /api/apple/app-store/search. See the Store API reference for field availability."""
+
+    path: ClassVar[str] = "/api/apple/app-store/search"
+    endpoint: Literal["apple_app_store_search"] = "apple_app_store_search"
+
+
+class AppleAppStoreProduct(ScrapeRequest, AppleProductRequest):
+    """Alpha. GET /api/apple/app-store/product. See the Store API reference for field availability."""
+
+    path: ClassVar[str] = "/api/apple/app-store/product"
+    endpoint: Literal["apple_app_store_product"] = "apple_app_store_product"
+
+
+class AppleAppStoreReviews(ScrapeRequest, AppleReviewsRequest):
+    """Alpha. GET /api/apple/app-store/reviews. See the Store API reference for field availability."""
+
+    path: ClassVar[str] = "/api/apple/app-store/reviews"
+    endpoint: Literal["apple_app_store_reviews"] = "apple_app_store_reviews"
+
+
 _REQUEST_CLASSES: tuple[type[ScrapeRequest], ...] = (
     GoogleSearch,
     GoogleAiOverview,
@@ -567,6 +640,15 @@ _REQUEST_CLASSES: tuple[type[ScrapeRequest], ...] = (
     TripadvisorReviews,
     AppleMapsPlaces,
     AppleMapsReviews,
+    GooglePlayApps,
+    GooglePlayGames,
+    GooglePlayBooks,
+    GooglePlayMovies,
+    GooglePlayProduct,
+    GooglePlayReviews,
+    AppleAppStoreSearch,
+    AppleAppStoreProduct,
+    AppleAppStoreReviews,
 )
 
 AnyRequest = Annotated[
@@ -594,7 +676,16 @@ AnyRequest = Annotated[
     | TripadvisorPlace
     | TripadvisorReviews
     | AppleMapsPlaces
-    | AppleMapsReviews,
+    | AppleMapsReviews
+    | GooglePlayApps
+    | GooglePlayGames
+    | GooglePlayBooks
+    | GooglePlayMovies
+    | GooglePlayProduct
+    | GooglePlayReviews
+    | AppleAppStoreSearch
+    | AppleAppStoreProduct
+    | AppleAppStoreReviews,
     Field(discriminator="endpoint"),
 ]
 

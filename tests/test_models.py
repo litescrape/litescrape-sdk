@@ -31,6 +31,15 @@ from litescrape_sdk.models import _REQUEST_CLASSES, REQUEST_ADAPTER
 ALLOWLISTS = json.loads((pathlib.Path(__file__).parent / "allowlists.json").read_text())
 
 PATHS = {
+    "google_play_apps": "/api/google/play/apps",
+    "google_play_games": "/api/google/play/games",
+    "google_play_books": "/api/google/play/books",
+    "google_play_movies": "/api/google/play/movies",
+    "google_play_product": "/api/google/play/product",
+    "google_play_reviews": "/api/google/play/reviews",
+    "apple_app_store_search": "/api/apple/app-store/search",
+    "apple_app_store_product": "/api/apple/app-store/product",
+    "apple_app_store_reviews": "/api/apple/app-store/reviews",
     "google_search": "/api/google/search",
     "google_ai_overview": "/api/google/ai-overview",
     "google_ai_mode": "/api/google/ai-mode",
@@ -61,7 +70,7 @@ PATHS = {
 
 def test_registry_covers_every_endpoint():
     assert set(REQUEST_TYPES) == set(ALLOWLISTS) == set(PATHS)
-    assert len(REQUEST_TYPES) == 25
+    assert len(REQUEST_TYPES) == 34
     assert {slug: cls.path for slug, cls in REQUEST_TYPES.items()} == PATHS
 
 

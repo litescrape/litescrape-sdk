@@ -309,5 +309,90 @@
     "sortby",
     "start",
     "yelp_domain"
+  ],
+  "google_play_apps": [
+    "age",
+    "apps_category",
+    "chart",
+    "gl",
+    "hl",
+    "next_page_token",
+    "q",
+    "section_page_token",
+    "see_more_token",
+    "store_device"
+  ],
+  "google_play_games": [
+    "chart",
+    "games_category",
+    "gl",
+    "hl",
+    "next_page_token",
+    "q",
+    "section_page_token",
+    "see_more_token",
+    "store_device"
+  ],
+  "google_play_books": [
+    "age",
+    "books_category",
+    "chart",
+    "gl",
+    "hl",
+    "next_page_token",
+    "price",
+    "q",
+    "section_page_token",
+    "see_more_token"
+  ],
+  "google_play_movies": [
+    "age",
+    "chart",
+    "gl",
+    "hl",
+    "movies_category",
+    "next_page_token",
+    "q",
+    "section_page_token",
+    "see_more_token"
+  ],
+  "google_play_product": [
+    "gl",
+    "hl",
+    "product_id",
+    "season_id",
+    "store"
+  ],
+  "google_play_reviews": [
+    "gl",
+    "hl",
+    "next_page_token",
+    "num",
+    "platform",
+    "product_id",
+    "rating",
+    "sort_by",
+    "store"
+  ],
+  "apple_app_store_search": [
+    "category_id",
+    "country",
+    "device",
+    "disallow_explicit",
+    "lang",
+    "num",
+    "property",
+    "term"
+  ],
+  "apple_app_store_product": [
+    "country",
+    "product_id",
+    "type"
+  ],
+  "apple_app_store_reviews": [
+    "country",
+    "page",
+    "product_id",
+    "sort"
   ]
 }
