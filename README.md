@@ -62,11 +62,16 @@ for result in results:
 Follow `litescrape_pagination.next` or use the returned continuation with the same operation
 and parameters. Each successful page consumes one call; failures do not. For Google Play,
 `chart`, `next_page_token`, `section_page_token`, and `see_more_token` are mutually exclusive.
-Queries exclude category filters. Omit `store_device` when using an apps or games query or category.
+Queries exclude category filters and charts. Search text is limited to 2,048 UTF-8 bytes,
+so non-ASCII characters can consume more than one byte. Apple search also limits
+URL-encoded terms to 4,096 bytes. Apps/games charts require
+`store_device="phone"` or an omitted device; other device storefronts are browsable without a chart. Omit `store_device` when using an apps or games query or category.
 `GooglePlayGames(q=...)` uses the shared Android app search; omit `q` or choose `games_category`
 to browse games. Apple review pages
 are one-based; exhausted pages return an empty list. Mac reviews use newest-first ordering.
 
 `search_metadata.raw_file` and `prettify_file`, when returned, link to authenticated response
 artifacts retained for at least seven days (today and the previous seven UTC date buckets). Download them with the same bearer key; downloads are unbilled.
+Apple search applies category and case-insensitive developer-name filters before the `num` ceiling.
+The native search window can contain fewer matching results than that ceiling.
 See the [API reference](https://litescrape.com/docs) for every parameter and response group.

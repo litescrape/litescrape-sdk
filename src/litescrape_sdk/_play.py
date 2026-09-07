@@ -21,7 +21,11 @@ Language = Annotated[
     str, StringConstraints(pattern=r"^[a-zA-Z]{2,3}(?:[-_][a-zA-Z0-9]{2,8}){0,3}$", max_length=32)
 ]
 Country = Annotated[str, StringConstraints(to_lower=True, pattern=r"^[a-zA-Z]{2}$")]
-Query = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=2048)]
+Query = Annotated[
+    str,
+    StringConstraints(strip_whitespace=True, min_length=1, max_length=2048),
+    Field(description="At most 2,048 UTF-8 bytes.", json_schema_extra={"x-max-utf8-bytes": 2048}),
+]
 Identifier = Annotated[str, StringConstraints(pattern=r"^[a-zA-Z0-9_.-]+$", min_length=1, max_length=512)]
 Category = Annotated[str, StringConstraints(pattern=r"^[a-zA-Z0-9_-]+$", min_length=1, max_length=128)]
 Token = Annotated[str, StringConstraints(pattern=r"^[a-zA-Z0-9_=+/:.-]+$", min_length=1, max_length=65536)]
@@ -62,6 +66,13 @@ class PlayRequest(BaseModel):
     )
     @classmethod
     def reject_controls(cls, value: Any, info: ValidationInfo) -> Any:
+        if info.field_name == "q" and isinstance(value, str):
+            try:
+                size = len(value.strip().encode("utf-8"))
+            except UnicodeEncodeError as exc:
+                raise ValueError("Use valid Unicode text") from exc
+            if size > 2048:
+                raise ValueError("Use at most 2,048 UTF-8 bytes")
         if isinstance(value, str) and any(ord(char) < 32 or ord(char) == 127 for char in value):
             raise ValueError("Control characters are not allowed")
         if info.field_name in {"price", "rating", "sort_by", "num"} and value is not None:
@@ -120,6 +131,10 @@ class PlayListingRequest(PlayRequest):
         selectors = [key for key in (*TOKEN_FIELDS, "chart") if getattr(self, key)]
         if len(selectors) > 1:
             raise ValueError("chart and pagination selectors are mutually exclusive")
+        if self.chart and self.q:
+            raise ValueError("chart and q are mutually exclusive")
+        if self.chart and getattr(self, "store_device", None) not in {None, "phone"}:
+            raise ValueError("Device-specific storefronts do not support charts; omit chart or use phone")
         category = next(
             (getattr(self, key) for key in self.__class__.model_fields if key.endswith("_category")), None
         )

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from typing import Annotated, Any, Literal
+from urllib.parse import quote_plus
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, ValidationInfo, field_validator
 
@@ -12,7 +13,14 @@ from ._store_countries import STOREFRONTS
 Country = Annotated[str, StringConstraints(to_lower=True, pattern=r"^[a-zA-Z]{2}$")]
 ProductId = Annotated[str, StringConstraints(pattern=r"^[1-9][0-9]{0,19}$")]
 Language = Annotated[str, StringConstraints(to_lower=True, pattern=r"^[a-zA-Z]{2,3}-[a-zA-Z]{2}$")]
-SearchTerm = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=2048)]
+SearchTerm = Annotated[
+    str,
+    StringConstraints(strip_whitespace=True, min_length=1, max_length=2048),
+    Field(
+        description="At most 2,048 UTF-8 bytes and 4,096 URL-encoded bytes.",
+        json_schema_extra={"x-max-utf8-bytes": 2048, "x-max-url-encoded-bytes": 4096},
+    ),
+]
 
 
 class StoreRequest(BaseModel):
@@ -45,6 +53,15 @@ class StoreRequest(BaseModel):
     )
     @classmethod
     def reject_controls(cls, value: Any, info: ValidationInfo) -> Any:
+        if info.field_name == "term" and isinstance(value, str):
+            try:
+                size = len(value.strip().encode("utf-8"))
+            except UnicodeEncodeError as exc:
+                raise ValueError("Use valid Unicode text") from exc
+            if size > 2048:
+                raise ValueError("Use at most 2,048 UTF-8 bytes")
+            if len(quote_plus(value.strip())) > 4096:
+                raise ValueError("Use at most 4,096 URL-encoded bytes")
         if isinstance(value, str) and any(ord(char) < 32 or ord(char) == 127 for char in value):
             raise ValueError("Control characters are not allowed")
         if info.field_name in {"num", "category_id", "page"} and value is not None:
