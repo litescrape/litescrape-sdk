@@ -93,6 +93,22 @@ def test_dict_and_typed_inputs_are_equivalent():
     assert from_dict.query_params() == typed.query_params() == {"q": "x", "num": "10", "nfpr": "1"}
 
 
+@pytest.mark.parametrize(
+    "value, normalized", [(True, "true"), (False, "false"), ("true", "true"), ("false", "false")]
+)
+def test_search_fast_mode(value, normalized):
+    assert GoogleSearch(q="coffee", fast_mode=value).query_params()["fast_mode"] == normalized
+    assert "fast_mode" not in GoogleSearch(q="coffee").query_params()
+    with pytest.raises(pydantic.ValidationError):
+        REQUEST_TYPES["google_ai_overview"](q="coffee", fast_mode=value)
+
+
+@pytest.mark.parametrize("value", [0, 1, "", "TRUE", "yes", "1", " true"])
+def test_search_fast_mode_rejects_ambiguous_values(value):
+    with pytest.raises(pydantic.ValidationError):
+        GoogleSearch(q="coffee", fast_mode=value)
+
+
 def test_typed_instances_pass_through_unchanged():
     request = GoogleSearch(q="x")
     assert REQUEST_ADAPTER.validate_python(request) is request

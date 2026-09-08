@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Annotated, Any, ClassVar, Literal
 
-from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, TypeAdapter, model_validator
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, StrictBool, TypeAdapter, model_validator
 
 from ._app_store import AppleProductRequest, AppleReviewsRequest, AppleSearchRequest
 from ._play import (
@@ -158,6 +158,7 @@ class GoogleSearch(_GoogleSearchFields):
 
     path: ClassVar[str] = "/api/google/search"
     endpoint: Literal["google_search"] = "google_search"
+    fast_mode: StrictBool | Literal["true", "false"] | None = None
 
 
 class GoogleAiOverview(_GoogleSearchFields):

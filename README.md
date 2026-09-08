@@ -29,6 +29,14 @@ types. `ascrape` is the same function for asyncio code, and `litescrape_sdk.REQU
 
 Development: `uv sync`, then `uv run pytest`, `uv run ruff check .`, and `uv run ruff format .`.
 
+## Google Search fast mode
+
+Google Search supports `GoogleSearch(q="coffee grinders", fast_mode=True)` to
+return only organic results plus search metadata and parameters. This skips
+AI Overview and other result groups. The default is the full response; fast mode
+is unavailable on the dedicated AI Overview endpoint. Requires an API deployment
+that supports `fast_mode`.
+
 ## Request deadlines
 
 Set `request_timeout` on `scrape` or `ascrape` to apply a server deadline to every item.
