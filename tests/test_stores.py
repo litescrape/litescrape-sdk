@@ -31,7 +31,8 @@ def test_store_boundary_corpus(surface, case):
 def test_store_fields_match_the_api():
     for surface in SURFACES:
         model = REQUEST_TYPES[surface["mode"].replace("-", "_")]
-        assert set(model.model_fields) - {"endpoint"} == set(surface["parameters"])
+        # The gateway adds timeout to every provider surface.
+        assert set(model.model_fields) - {"endpoint"} == set(surface["parameters"]) | {"timeout"}
         assert model.model_config["coerce_numbers_to_str"] is False
 
 

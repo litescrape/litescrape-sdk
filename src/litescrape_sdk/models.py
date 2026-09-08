@@ -73,6 +73,7 @@ def _requires(model: BaseModel, name: str, dependency: str) -> None:
 
 Flag = Annotated[Literal["0", "1"], BeforeValidator(_flag)]
 Device = Literal["desktop", "tablet", "mobile"]
+TimeoutSeconds = Annotated[float, Field(gt=0, le=90, allow_inf_nan=False, strict=True)]
 
 
 class ScrapeRequest(BaseModel):
@@ -80,6 +81,7 @@ class ScrapeRequest(BaseModel):
 
     model_config = ConfigDict(extra="forbid", coerce_numbers_to_str=True)
     path: ClassVar[str]
+    timeout: TimeoutSeconds | None = None
 
     def query_params(self) -> dict[str, str]:
         dumped = self.model_dump(exclude_none=True, exclude={"endpoint"})

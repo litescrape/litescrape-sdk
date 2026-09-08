@@ -9,6 +9,7 @@ from .errors import (
     NotFoundError,
     PaymentRequiredError,
     RateLimitError,
+    RequestDeadlineExceededError,
     TransportError,
     ValidationError,
 )
@@ -81,6 +82,7 @@ __all__ = [
     "PaymentRequiredError",
     "NotFoundError",
     "RateLimitError",
+    "RequestDeadlineExceededError",
     "GoogleSearch",
     "GoogleAiOverview",
     "GoogleAiMode",

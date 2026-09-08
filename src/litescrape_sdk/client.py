@@ -22,10 +22,11 @@ from .errors import (
     TransportError,
     ValidationError,
 )
-from .models import REQUEST_ADAPTER, REQUEST_TYPES, KeyStatus, ScrapeRequest
+from .models import REQUEST_ADAPTER, REQUEST_TYPES, KeyStatus, ScrapeRequest, TimeoutSeconds
 
 RequestItem = Mapping[str, Any] | ScrapeRequest
 _FATAL_CODES = frozenset({"api_key_disabled"})
+_TIMEOUT_ADAPTER = pydantic.TypeAdapter(TimeoutSeconds)
 
 
 @dataclass(frozen=True, slots=True)
@@ -69,12 +70,15 @@ def _describe(exc: pydantic.ValidationError) -> str:
     return "; ".join(lines)
 
 
-def _validate(items: Sequence[RequestItem]) -> list[ScrapeRequest]:
+def _validate(items: Sequence[RequestItem], request_timeout: float | None = None) -> list[ScrapeRequest]:
     validated: list[ScrapeRequest] = []
     problems: list[tuple[int, str]] = []
     for index, item in enumerate(items):
         try:
-            validated.append(REQUEST_ADAPTER.validate_python(item))
+            request = REQUEST_ADAPTER.validate_python(item)
+            if request.timeout is None and request_timeout is not None:
+                request = request.model_copy(update={"timeout": request_timeout})
+            validated.append(request)
         except pydantic.ValidationError as exc:
             problems.append((index, _describe(exc)))
     if problems:
@@ -170,6 +174,7 @@ async def ascrape(
     attempts: int = 5,
     concurrency: int | None = None,
     timeout: float = 120.0,
+    request_timeout: float | None = None,
     tqdm_disable: bool = False,
     base_url: str | None = None,
 ) -> list[Result]:
@@ -179,7 +184,12 @@ async def ascrape(
     including inside a running loop; call ``ascrape`` directly from asyncio code.
     """
     _check_args(attempts, concurrency, timeout)
-    items = _validate(list(requests))
+    if request_timeout is not None:
+        try:
+            request_timeout = _TIMEOUT_ADAPTER.validate_python(request_timeout)
+        except pydantic.ValidationError as exc:
+            raise ValueError("request_timeout must be a finite number greater than 0 and at most 90") from exc
+    items = _validate(list(requests), request_timeout)
     if not items:
         return []
     key = _resolve_key(api_key)
@@ -228,6 +238,7 @@ def scrape(
     attempts: int = 5,
     concurrency: int | None = None,
     timeout: float = 120.0,
+    request_timeout: float | None = None,
     tqdm_disable: bool = False,
     base_url: str | None = None,
 ) -> list[Result]:
@@ -272,8 +283,20 @@ def scrape(
     errors and timeouts, HTTP 429 and 5xx, and any error the API marks ``retryable``. Not retried: 400,
     401, 402, 403, 404, 422. Waits grow exponentially with jitter from about 1 s, capped at 30 s, or follow
     the API's ``Retry-After``. Only a 200 response is billed; a retry is a new call, so if an attempt
-    succeeded server-side but its response was lost in transit, both calls are billed. ``timeout`` is per
-    attempt in seconds and defaults to 120, above the API's own 90 s deadline.
+    succeeded server-side but its response was lost in transit, both calls are billed.
+
+    ``request_timeout`` sets the API's whole-request deadline in seconds for each attempt, from gateway
+    receipt through admission, scraping, and billing. It must be finite, greater than 0, and at most 90.
+    An item's ``timeout`` overrides this default. Omitting both preserves the API's standard deadline.
+    Expiry returns HTTP 503 ``request_deadline_exceeded`` as ``RequestDeadlineExceededError``, with
+    ``retryable=True`` and a request ID. That attempt is not charged, and the API cancels its underlying
+    scrape. Credit/concurrency cleanup can finish shortly after the error response. Automatic retries
+    each get a new deadline; use ``attempts=1`` to return after the first attempt. This does not cap SDK
+    queueing, the status check, network transit, backoff, or the entire batch.
+
+    ``timeout`` remains the HTTP transport timeout (120 seconds by default). Keep it longer than the
+    server deadline to receive the API's response. A local transport timeout alone does not establish
+    whether the server completed and billed a request.
 
     Per-item failures never raise. ``Result.ok`` is False and ``Result.error`` holds the exception: an
     ``APIError`` subclass with ``status_code``, ``error_code``, and ``request_id`` for API envelopes
@@ -290,7 +313,8 @@ def scrape(
         api_key: bearer key; defaults to ``LITESCRAPE_API_KEY``.
         attempts: total tries per item, at least 1.
         concurrency: optional lower cap on in-flight requests, at least 1.
-        timeout: seconds per attempt.
+        timeout: HTTP transport timeout in seconds per attempt (default 120).
+        request_timeout: default server deadline in seconds per attempt; overridden by each item's timeout.
         tqdm_disable: hide the progress bar.
         base_url: API origin; defaults to ``LITESCRAPE_API_URL`` or ``https://api.litescrape.com``.
 
@@ -308,6 +332,7 @@ def scrape(
             attempts=attempts,
             concurrency=concurrency,
             timeout=timeout,
+            request_timeout=request_timeout,
             tqdm_disable=tqdm_disable,
             base_url=base_url,
         )

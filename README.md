@@ -29,6 +29,49 @@ types. `ascrape` is the same function for asyncio code, and `litescrape_sdk.REQU
 
 Development: `uv sync`, then `uv run pytest`, `uv run ruff check .`, and `uv run ruff format .`.
 
+## Request deadlines
+
+Set `request_timeout` on `scrape` or `ascrape` to apply a server deadline to every item.
+Set `timeout` on an individual request to override that default. Both accept seconds greater than
+0 and at most 90, including fractional seconds; omitting them preserves the API's standard behavior.
+
+```python
+from litescrape_sdk import GoogleSearch, RequestDeadlineExceededError, scrape
+
+(result,) = scrape(
+    [GoogleSearch(q="coffee grinders")],
+    request_timeout=15,
+    attempts=1,
+)
+if isinstance(result.error, RequestDeadlineExceededError):
+    print(result.error.request_id, result.error.retryable, result.error.message)
+else:
+    print(result.raise_for_error())
+
+# A per-item deadline also works in dictionaries.
+results = scrape(
+    [
+        GoogleSearch(q="coffee", timeout=10),
+        {"endpoint": "google_search", "q": "tea", "timeout": 20},
+    ],
+    attempts=1,
+)
+```
+
+The deadline covers the entire API request from gateway receipt, including admission, scraping,
+and billing. On expiry, the API returns HTTP 503 with the new `request_deadline_exceeded` code,
+`retryable: true`, a request ID, and a description. That attempt is not charged. The API cancels
+the underlying scrape to release concurrency; credit and concurrency cleanup can finish shortly
+after the response.
+
+The SDK retries this response using its usual `attempts` and `Retry-After` rules. Each attempt gets
+its own deadline; use `attempts=1` as above to receive the first timeout immediately. SDK queueing,
+the status check, network transit, retry waits, and the full batch are outside the server deadline.
+
+The existing `scrape(..., timeout=120)` argument remains the HTTP transport timeout. Keep it longer
+than the server deadline so the API can return its error. A client-side `TransportError` alone does
+not guarantee that the request was unbilled.
+
 ## Store APIs (Alpha)
 
 All nine Store operations use your existing key. Alpha fields depend on what the storefront supplies.

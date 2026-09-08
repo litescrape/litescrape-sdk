@@ -79,6 +79,10 @@ class RateLimitError(APIError):
     """429: the key's concurrency or request limit was reached."""
 
 
+class RequestDeadlineExceededError(APIError):
+    """The API's whole-request deadline expired; this attempt is retryable and is not charged."""
+
+
 _BY_STATUS: dict[int, type[APIError]] = {
     401: AuthenticationError,
     402: PaymentRequiredError,
@@ -102,7 +106,11 @@ def api_error_from_response(response: httpx.Response) -> APIError:
             "request_id": response.headers.get("x-request-id", ""),
             "retryable": status == 429 or status >= 500,
         }
-    cls = _BY_STATUS.get(status, APIError)
+    cls = (
+        RequestDeadlineExceededError
+        if status == 503 and body["error_code"] == "request_deadline_exceeded"
+        else _BY_STATUS.get(status, APIError)
+    )
     return cls(
         str(body.get("error") or f"HTTP {status}"),
         status_code=status,

@@ -1,11 +1,13 @@
 {
   "apple_maps_places": [
     "locale",
-    "muid"
+    "muid",
+    "timeout"
   ],
   "apple_maps_reviews": [
     "locale",
-    "muid"
+    "muid",
+    "timeout"
   ],
   "bing_maps": [
     "count",
@@ -13,7 +15,8 @@
     "first",
     "place_id",
     "q",
-    "setlang"
+    "setlang",
+    "timeout"
   ],
   "bing_search": [
     "cc",
@@ -26,14 +29,16 @@
     "lon",
     "mkt",
     "q",
-    "safeSearch"
+    "safeSearch",
+    "timeout"
   ],
   "duckduckgo_maps": [
     "bbox",
     "lat",
     "lon",
     "q",
-    "strict_bbox"
+    "strict_bbox",
+    "timeout"
   ],
   "duckduckgo_search": [
     "df",
@@ -42,7 +47,8 @@
     "q",
     "safe",
     "search_assist",
-    "start"
+    "start",
+    "timeout"
   ],
   "google_ads": [
     "device",
@@ -50,7 +56,8 @@
     "location",
     "nfpr",
     "q",
-    "safe"
+    "safe",
+    "timeout"
   ],
   "google_ai_mode": [
     "continuable",
@@ -62,6 +69,7 @@
     "location",
     "q",
     "subsequent_request_token",
+    "timeout",
     "uule"
   ],
   "google_ai_overview": [
@@ -103,6 +111,7 @@
     "start",
     "tbm",
     "tbs",
+    "timeout",
     "uds",
     "uule"
   ],
@@ -110,7 +119,8 @@
     "contributor_id",
     "gl",
     "hl",
-    "limit"
+    "limit",
+    "timeout"
   ],
   "google_local": [
     "device",
@@ -122,6 +132,7 @@
     "q",
     "start",
     "tbs",
+    "timeout",
     "uule"
   ],
   "google_maps": [
@@ -145,6 +156,7 @@
     "place_id",
     "q",
     "start",
+    "timeout",
     "type",
     "z"
   ],
@@ -152,20 +164,23 @@
     "gl",
     "google_domain",
     "hl",
-    "place_id"
+    "place_id",
+    "timeout"
   ],
   "google_maps_photo": [
     "data_id",
     "gl",
     "google_domain",
-    "hl"
+    "hl",
+    "timeout"
   ],
   "google_maps_posts": [
     "data_id",
     "gl",
     "google_domain",
     "hl",
-    "next_page_token"
+    "next_page_token",
+    "timeout"
   ],
   "google_maps_web_results": [
     "device",
@@ -174,7 +189,8 @@
     "hl",
     "ibp",
     "q",
-    "start"
+    "start",
+    "timeout"
   ],
   "google_reviews": [
     "data_id",
@@ -186,6 +202,7 @@
     "query",
     "sort_by",
     "source_metadata",
+    "timeout",
     "topic_id"
   ],
   "google_search": [
@@ -227,6 +244,7 @@
     "start",
     "tbm",
     "tbs",
+    "timeout",
     "uds",
     "uule"
   ],
@@ -246,6 +264,7 @@
     "small_business",
     "sort_by",
     "start",
+    "timeout",
     "uule"
   ],
   "google_shopping_product": [
@@ -259,6 +278,7 @@
     "location",
     "prds",
     "q",
+    "timeout",
     "uule"
   ],
   "tripadvisor_place": [
@@ -266,6 +286,7 @@
     "geo_id",
     "locale",
     "place_id",
+    "timeout",
     "tripadvisor_domain"
   ],
   "tripadvisor_reviews": [
@@ -274,6 +295,7 @@
     "place_id",
     "sort_by",
     "start",
+    "timeout",
     "translate",
     "tripadvisor_domain"
   ],
@@ -286,6 +308,7 @@
     "place_type",
     "q",
     "start",
+    "timeout",
     "tripadvisor_domain"
   ],
   "yelp_reviews": [
@@ -298,6 +321,7 @@
     "rating",
     "sortby",
     "start",
+    "timeout",
     "yelp_domain"
   ],
   "yelp_search": [
@@ -308,6 +332,7 @@
     "l",
     "sortby",
     "start",
+    "timeout",
     "yelp_domain"
   ],
   "google_play_apps": [
@@ -320,7 +345,8 @@
     "q",
     "section_page_token",
     "see_more_token",
-    "store_device"
+    "store_device",
+    "timeout"
   ],
   "google_play_games": [
     "chart",
@@ -331,7 +357,8 @@
     "q",
     "section_page_token",
     "see_more_token",
-    "store_device"
+    "store_device",
+    "timeout"
   ],
   "google_play_books": [
     "age",
@@ -343,7 +370,8 @@
     "price",
     "q",
     "section_page_token",
-    "see_more_token"
+    "see_more_token",
+    "timeout"
   ],
   "google_play_movies": [
     "age",
@@ -354,14 +382,16 @@
     "next_page_token",
     "q",
     "section_page_token",
-    "see_more_token"
+    "see_more_token",
+    "timeout"
   ],
   "google_play_product": [
     "gl",
     "hl",
     "product_id",
     "season_id",
-    "store"
+    "store",
+    "timeout"
   ],
   "google_play_reviews": [
     "gl",
@@ -372,7 +402,8 @@
     "product_id",
     "rating",
     "sort_by",
-    "store"
+    "store",
+    "timeout"
   ],
   "apple_app_store_search": [
     "category_id",
@@ -382,17 +413,20 @@
     "lang",
     "num",
     "property",
-    "term"
+    "term",
+    "timeout"
   ],
   "apple_app_store_product": [
     "country",
     "product_id",
+    "timeout",
     "type"
   ],
   "apple_app_store_reviews": [
     "country",
     "page",
     "product_id",
-    "sort"
+    "sort",
+    "timeout"
   ]
 }
