@@ -103,7 +103,7 @@ def _should_retry(error: LitescrapeError) -> bool:
 def _delay(attempt: int, retry_after: float | None) -> float:
     if retry_after is not None:
         return min(max(retry_after, 0.0), BACKOFF_CAP)
-    ceiling = min(BACKOFF_CAP, float(2 ** (attempt - 1)))
+    ceiling = min(BACKOFF_CAP, float(2 ** min(max(attempt - 1, 0), 6)))
     return random.uniform(ceiling / 2, ceiling)
 
 
@@ -114,12 +114,18 @@ async def _attempt(
     headers: dict[str, str],
     timeout: float,
     outcome: Outcome,
+    *,
+    method: str = "GET",
+    json_body: dict[str, Any] | None = None,
+    accepted_statuses: tuple[int, ...] = (200,),
 ) -> LitescrapeError | None:
     outcome.status_code, outcome.request_id = None, ""
     try:
-        response = await client.get(
+        response = await client.request(
+            method,
             path,
             params=params,
+            **({"json": json_body} if json_body is not None else {}),
             headers=headers,
             timeout=httpx.Timeout(timeout, connect=min(CONNECT_TIMEOUT, timeout)),
         )
@@ -129,7 +135,7 @@ async def _attempt(
         return TransportError(f"{type(exc).__name__}: {exc}", retryable=False, cause=exc)
     outcome.status_code = response.status_code
     outcome.request_id = response.headers.get("x-request-id", "")
-    if response.status_code != 200:
+    if response.status_code not in accepted_statuses:
         error = api_error_from_response(response)
         outcome.request_id = error.request_id or outcome.request_id
         return error
@@ -153,6 +159,9 @@ async def request_with_retries(
     timeout: float,
     semaphore: asyncio.Semaphore | None = None,
     gate: Callable[[], LitescrapeError | None] | None = None,
+    method: str = "GET",
+    json_body: dict[str, Any] | None = None,
+    accepted_statuses: tuple[int, ...] = (200,),
 ) -> Outcome:
     outcome = Outcome()
     slot = semaphore if semaphore is not None else contextlib.nullcontext()
@@ -164,7 +173,8 @@ async def request_with_retries(
                 outcome.status_code = getattr(blocked, "status_code", None)
                 return outcome
             outcome.attempts = attempt
-            error = await _attempt(client, path, params, headers, timeout, outcome)
+            error = await _attempt(client, path, params, headers, timeout, outcome,
+                                   method=method, json_body=json_body, accepted_statuses=accepted_statuses)
         outcome.error = error
         if error is None:
             return outcome

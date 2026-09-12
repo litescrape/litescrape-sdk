@@ -41,6 +41,7 @@ class Result:
     request_id: str
     attempts: int
     elapsed: float
+    job_id: str = ""
 
     @property
     def ok(self) -> bool:
@@ -177,6 +178,9 @@ async def ascrape(
     request_timeout: float | None = None,
     tqdm_disable: bool = False,
     base_url: str | None = None,
+    batched: bool = False,
+    useCache: bool = False,
+    cache_path: str | os.PathLike[str] | None = None,
 ) -> list[Result]:
     """Async form of :func:`scrape`: same arguments, results, and errors, run on the current event loop.
 
@@ -184,6 +188,8 @@ async def ascrape(
     including inside a running loop; call ``ascrape`` directly from asyncio code.
     """
     _check_args(attempts, concurrency, timeout)
+    if useCache and not batched:
+        raise ValueError("useCache requires batched=True")
     if request_timeout is not None:
         try:
             request_timeout = _TIMEOUT_ADAPTER.validate_python(request_timeout)
@@ -196,6 +202,22 @@ async def ascrape(
     url = _resolve_base_url(base_url)
     headers = {"Authorization": f"Bearer {key}"}
     client = _runtime.client_for(url)
+    if batched:
+        from . import _batch
+
+        return await _batch.run(
+            items,
+            client=client,
+            key=key,
+            url=url,
+            headers=headers,
+            attempts=attempts,
+            timeout=timeout,
+            concurrency=concurrency,
+            use_cache=useCache,
+            cache_path=cache_path,
+            tqdm_disable=tqdm_disable,
+        )
     status = await _fetch_status(client, headers, attempts, timeout)
     if status.remaining_calls < len(items):
         raise PaymentRequiredError(
@@ -241,6 +263,9 @@ def scrape(
     request_timeout: float | None = None,
     tqdm_disable: bool = False,
     base_url: str | None = None,
+    batched: bool = False,
+    useCache: bool = False,
+    cache_path: str | os.PathLike[str] | None = None,
 ) -> list[Result]:
     """Run every item in ``requests`` against the Litescrape API; one ``Result`` per item, in input order.
 
@@ -264,7 +289,7 @@ def scrape(
     classes, so both forms send identical requests. Unknown parameter names, wrong types, and missing
     required parameters are rejected locally.
 
-    Before any request is sent:
+    With the default ``batched=False``, before any request is sent:
 
     1. Every item is validated. If any item is invalid, ``ValidationError`` names each bad index and
        nothing is sent.
@@ -308,6 +333,21 @@ def scrape(
     Ctrl-C (or cancelling the task) cancels in-flight requests; a request the API had already completed
     is still billed.
 
+    With ``batched=True``, every item is submitted as a durable server job before completion polling
+    begins. Submission/poll concurrency defaults to 32 and can be set with ``concurrency``; server
+    execution uses separate batch capacity. No whole-list balance check is performed: each new job
+    reserves one credit, terminal failures refund it, and retrieving a result costs no additional credit.
+    Submission retries reuse an idempotency key, including after a lost acknowledgement.
+
+    Job IDs and submission intentions are always saved locally before continuing. ``useCache=True``
+    resumes matching jobs for the same API key, API origin and request parameters; use the same cache
+    path after a disconnect or crash. Reordering distinct inputs is supported. Duplicate identical
+    inputs are matched by occurrence. Only confirmed missing/expired jobs are replaced. The default
+    ``useCache=False`` creates fresh jobs. Responses remain available for 24 hours after completion.
+    Canceling the SDK leaves accepted server jobs running. ``Result.job_id`` identifies each job.
+    In batch mode, ``request_timeout`` limits each worker attempt; queue time is outside that deadline.
+    ``attempts`` controls submission/poll transport retries; provider retries are managed by the server.
+
     Args:
         requests: dicts with an ``endpoint`` key, or request objects such as ``GoogleSearch(q=...)``.
         api_key: bearer key; defaults to ``LITESCRAPE_API_KEY``.
@@ -317,6 +357,9 @@ def scrape(
         request_timeout: default server deadline in seconds per attempt; overridden by each item's timeout.
         tqdm_disable: hide the progress bar.
         base_url: API origin; defaults to ``LITESCRAPE_API_URL`` or ``https://api.litescrape.com``.
+        batched: submit durable server jobs, then poll; defaults to False.
+        useCache: resume locally cached jobs; requires batched=True and defaults to False.
+        cache_path: SQLite job cache; defaults to LITESCRAPE_JOB_CACHE or ~/.cache/litescrape/jobs.sqlite3.
 
     Returns:
         ``list[Result]`` aligned with ``requests``.
@@ -335,6 +378,9 @@ def scrape(
             request_timeout=request_timeout,
             tqdm_disable=tqdm_disable,
             base_url=base_url,
+            batched=batched,
+            useCache=useCache,
+            cache_path=cache_path,
         )
     )
 

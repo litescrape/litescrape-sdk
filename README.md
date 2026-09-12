@@ -29,6 +29,42 @@ types. `ascrape` is the same function for asyncio code, and `litescrape_sdk.REQU
 
 Development: `uv sync`, then `uv run pytest`, `uv run ruff check .`, and `uv run ruff format .`.
 
+## Durable batches and recovery
+
+Requires an API deployment with durable batch support. Set `batched=True` to submit every query
+before polling for completion. The server continues processing accepted jobs if your computer
+disconnects or the Python process exits. Responses are retained for 24 hours after completion.
+
+```python
+from litescrape_sdk import GoogleSearch, scrape
+
+queries = [GoogleSearch(q="coffee grinders"), GoogleSearch(q="espresso machines")]
+results = scrape(queries, batched=True, cache_path="./my-batch.sqlite3")
+
+# After a crash or disconnect, rerun with the same inputs, key and cache path:
+results = scrape(queries, batched=True, useCache=True, cache_path="./my-batch.sqlite3")
+for result in results:
+    print(result.job_id, result.data or result.error)
+```
+
+The SDK always saves submission intentions and job IDs locally in batch mode. `useCache=False`
+is the default and creates fresh jobs. `useCache=True` retrieves matching saved jobs; it creates
+replacements only when the server confirms a job is missing or expired. A polling outage does
+not trigger a fresh charge. Reordering distinct queries preserves their cache matches; identical
+queries are matched by occurrence. Keep separate cache files for independently resumable batches.
+The default path is `~/.cache/litescrape/jobs.sqlite3`, configurable with `LITESCRAPE_JOB_CACHE`.
+The cache stores job IDs and request fingerprints, without raw API keys or query text.
+
+New jobs reserve one credit; terminal failures refund that reservation. Polling and retrying the
+same submission do not consume more credits. Batch mode skips the synchronous whole-list balance
+check so previously paid results can be recovered even with no credits remaining. Check every
+`Result` for submission errors, including insufficient credits for new jobs.
+
+`concurrency` controls simultaneous submission/poll requests (default 32); execution uses separate
+server batch capacity. Network retries and polling use exponential backoff with jitter, capped at
+30 seconds; retries honor `Retry-After`. All results are returned in input order. `ascrape` accepts
+the same options. A server `request_timeout` applies to each worker attempt after queueing.
+
 ## Google Search fast mode
 
 Google Search supports `GoogleSearch(q="coffee grinders", fast_mode=True)` to
