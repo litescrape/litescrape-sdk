@@ -173,8 +173,17 @@ async def request_with_retries(
                 outcome.status_code = getattr(blocked, "status_code", None)
                 return outcome
             outcome.attempts = attempt
-            error = await _attempt(client, path, params, headers, timeout, outcome,
-                                   method=method, json_body=json_body, accepted_statuses=accepted_statuses)
+            error = await _attempt(
+                client,
+                path,
+                params,
+                headers,
+                timeout,
+                outcome,
+                method=method,
+                json_body=json_body,
+                accepted_statuses=accepted_statuses,
+            )
         outcome.error = error
         if error is None:
             return outcome
