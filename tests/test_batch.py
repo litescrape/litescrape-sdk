@@ -217,3 +217,69 @@ def test_poll_rounds_collect_later_jobs_while_first_job_is_pending(mock_api, tmp
     )
     assert all(result.ok for result in results)
     assert polls.index("job-19") < max(i for i, job in enumerate(polls) if job == "job-0")
+
+
+def test_full_workload_intents_are_durable_before_first_post(mock_api, tmp_path):
+    backend(mock_api)
+    original = mock_api.default
+    path = tmp_path / "jobs.db"
+    items = [GoogleSearch(q=str(i)) for i in range(20)]
+    batch_ids = []
+
+    def handle(request):
+        if request.method == "POST":
+            cache = JobCache(path)
+            with cache.connect() as connection:
+                assert connection.execute("SELECT count(*) FROM jobs").fetchone()[0] == 20
+                assert connection.execute("SELECT count(DISTINCT batch_key) FROM jobs").fetchone()[0] == 1
+            batch_ids.append(request.headers["x-litescrape-batch-id"])
+            assert request.headers["x-litescrape-batch-size"] == "20"
+        return original(request)
+
+    mock_api.default = handle
+    assert all(r.ok for r in scrape(items, batched=True, cache_path=path, tqdm_disable=True))
+    assert len(set(batch_ids)) == 1
+
+
+def test_resume_lost_ack_preserves_batch_and_new_items_get_their_own_batch(mock_api, tmp_path):
+    backend(mock_api)
+    original = mock_api.default
+    path = tmp_path / "jobs.db"
+    seen = []
+
+    def handle(request):
+        result = original(request)
+        if request.method == "POST":
+            seen.append((request.headers["idempotency-key"], request.headers["x-litescrape-batch-id"]))
+            if len(seen) == 1:
+                raise httpx.ReadError("lost", request=request)
+        return result
+
+    mock_api.default = handle
+    options = dict(batched=True, cache_path=path, attempts=1, tqdm_disable=True)
+    assert not scrape([GoogleSearch(q="old")], **options)[0].ok
+    assert all(r.ok for r in scrape([GoogleSearch(q="old"), GoogleSearch(q="new")], useCache=True, **options))
+    old = [item for item in seen if item[0] == seen[0][0]]
+    assert len(old) == 2 and old[0] == old[1]
+    assert len({item[1] for item in seen}) == 2
+
+
+def test_cache_schema_upgrade_preserves_old_submission_intents(tmp_path):
+    import sqlite3
+
+    path = tmp_path / "jobs.db"
+    with sqlite3.connect(path) as connection:
+        connection.execute(
+            "CREATE TABLE jobs(cache_key TEXT PRIMARY KEY,submission TEXT NOT NULL,"
+            "job_id TEXT,expires_at TEXT,updated_at REAL)"
+        )
+        connection.execute("INSERT INTO jobs VALUES ('key','old-intent','old-job',NULL,0)")
+    cache = JobCache(path)
+    entry = cache.prepare("key", True, "new-batch-id", 10)
+    assert entry == {
+        "submission": "old-intent",
+        "job_id": "old-job",
+        "batch_key": "new-batch-id",
+        "batch_size": 10,
+    }
+    assert cache.prepare("key", True, "different-batch-id", 20) == entry

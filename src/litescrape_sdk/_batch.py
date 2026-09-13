@@ -34,6 +34,12 @@ class JobCache:
             connection.execute("""CREATE TABLE IF NOT EXISTS jobs (
                 cache_key TEXT PRIMARY KEY, submission TEXT NOT NULL, job_id TEXT,
                 expires_at TEXT, updated_at REAL NOT NULL)""")
+            connection.execute("BEGIN IMMEDIATE")
+            columns = {row[1] for row in connection.execute("PRAGMA table_info(jobs)")}
+            if "batch_key" not in columns:
+                connection.execute("ALTER TABLE jobs ADD COLUMN batch_key TEXT")
+            if "batch_size" not in columns:
+                connection.execute("ALTER TABLE jobs ADD COLUMN batch_size INTEGER")
         if os.name != "nt":
             self.path.chmod(0o600)
 
@@ -49,22 +55,43 @@ class JobCache:
         finally:
             connection.close()
 
-    def prepare(self, cache_key: str, use_cache: bool) -> dict:
+    def prepare(self, cache_key: str, use_cache: bool, batch_key=None, batch_size=1) -> dict:
+        return self.prepare_many([cache_key], use_cache, batch_key or uuid.uuid4().hex, batch_size)[0]
+
+    def prepare_many(self, keys, use_cache, batch_key, batch_size):
+        """Commit the entire workload's intentions before sending its first input."""
+        entries = []
         with self.connect() as connection:
             connection.execute("BEGIN IMMEDIATE")
-            row = connection.execute(
-                "SELECT submission,job_id FROM jobs WHERE cache_key=?", (cache_key,)
-            ).fetchone()
-            if use_cache and row:
-                return {"submission": row[0], "job_id": row[1]}
-            submission = uuid.uuid4().hex
-            connection.execute(
-                """INSERT INTO jobs(cache_key,submission,updated_at) VALUES (?,?,?)
-                ON CONFLICT(cache_key) DO UPDATE SET submission=excluded.submission,
-                job_id=NULL,expires_at=NULL,updated_at=excluded.updated_at""",
-                (cache_key, submission, time.time()),
-            )
-            return {"submission": submission, "job_id": None}
+            for cache_key in keys:
+                row = connection.execute(
+                    "SELECT submission,job_id,batch_key,batch_size FROM jobs WHERE cache_key=?", (cache_key,)
+                ).fetchone()
+                if use_cache and row:
+                    entry = dict(zip(("submission", "job_id", "batch_key", "batch_size"), row, strict=True))
+                    if not entry["batch_key"]:
+                        entry.update(batch_key=batch_key, batch_size=batch_size)
+                        connection.execute(
+                            "UPDATE jobs SET batch_key=?,batch_size=? WHERE cache_key=?",
+                            (batch_key, batch_size, cache_key),
+                        )
+                else:
+                    entry = {
+                        "submission": uuid.uuid4().hex,
+                        "job_id": None,
+                        "batch_key": batch_key,
+                        "batch_size": batch_size,
+                    }
+                    connection.execute(
+                        """INSERT INTO jobs(cache_key,submission,updated_at,batch_key,batch_size)
+                        VALUES (?,?,?,?,?)
+                        ON CONFLICT(cache_key) DO UPDATE SET submission=excluded.submission,
+                        job_id=NULL,expires_at=NULL,updated_at=excluded.updated_at,
+                        batch_key=excluded.batch_key,batch_size=excluded.batch_size""",
+                        (cache_key, entry["submission"], time.time(), batch_key, batch_size),
+                    )
+                entries.append(entry)
+        return entries
 
     def save(self, cache_key: str, submission: str, job: dict):
         with self.connect() as connection:
@@ -104,6 +131,8 @@ async def run(
         limit = min(limit, _runtime.SELECTOR_LOOP_CAP)
     semaphore = asyncio.Semaphore(limit)
     started = time.monotonic()
+    batch_key = uuid.uuid4().hex
+    entries = await asyncio.to_thread(cache.prepare_many, keys, use_cache, batch_key, len(items))
 
     async def poll_once(job_id):
         return await _runtime.request_with_retries(
@@ -117,19 +146,26 @@ async def run(
         )
 
     async def submit(index, replace_expired=False):
-        entry = await asyncio.to_thread(cache.prepare, keys[index], use_cache and not replace_expired)
+        entry = entries[index]
+        if replace_expired:
+            entry = await asyncio.to_thread(cache.prepare, keys[index], False, batch_key, len(items))
         if entry["job_id"]:
             outcome = await poll_once(entry["job_id"])
             if outcome.error is None:
                 return entry, outcome
             if outcome.status_code not in (404, 410):
                 return entry, outcome  # An outage is not permission to bill again.
-            entry = await asyncio.to_thread(cache.prepare, keys[index], False)
+            entry = await asyncio.to_thread(cache.prepare, keys[index], False, batch_key, len(items))
         outcome = await _runtime.request_with_retries(
             client,
             items[index].path + "/async",
             {},
-            headers={**headers, "Idempotency-Key": entry["submission"]},
+            headers={
+                **headers,
+                "Idempotency-Key": entry["submission"],
+                "X-Litescrape-Batch-ID": entry["batch_key"],
+                "X-Litescrape-Batch-Size": str(entry["batch_size"]),
+            },
             attempts=attempts,
             timeout=timeout,
             semaphore=semaphore,

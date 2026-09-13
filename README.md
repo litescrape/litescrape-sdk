@@ -47,13 +47,15 @@ for result in results:
     print(result.job_id, result.data or result.error)
 ```
 
-The SDK always saves submission intentions and job IDs locally in batch mode. `useCache=False`
+The SDK saves the entire workload's submission intentions and batch IDs before sending its first
+request, then saves returned job IDs. The server provisions dedicated batch workers from accepted
+inputs and assigns work as matching identities become ready. `useCache=False`
 is the default and creates fresh jobs. `useCache=True` retrieves matching saved jobs; it creates
 replacements only when the server confirms a job is missing or expired. A polling outage does
 not trigger a fresh charge. Reordering distinct queries preserves their cache matches; identical
 queries are matched by occurrence. Keep separate cache files for independently resumable batches.
 The default path is `~/.cache/litescrape/jobs.sqlite3`, configurable with `LITESCRAPE_JOB_CACHE`.
-The cache stores job IDs and request fingerprints, without raw API keys or query text.
+The cache stores batch IDs, job IDs and request fingerprints, without raw API keys or query text.
 
 New jobs reserve one credit; terminal failures refund that reservation. Polling and retrying the
 same submission do not consume more credits. Batch mode skips the synchronous whole-list balance
