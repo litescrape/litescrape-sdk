@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import concurrent.futures
 import contextlib
+import platform
 import random
 import sys
 import threading
@@ -19,6 +20,15 @@ from .errors import APIError, LitescrapeError, TransportError, api_error_from_re
 
 DEFAULT_BASE_URL = "https://api.litescrape.com"
 DEFAULT_CONCURRENCY = 25
+CLIENT_NAME = "litescrape-sdk"
+# Every request identifies the SDK so the API can attribute usage to this
+# channel: a product token first, then the runtime in a standard UA comment.
+USER_AGENT = (
+    f"{CLIENT_NAME}/{__version__} "
+    f"(Python/{platform.python_version()}; httpx/{httpx.__version__}; {platform.system() or 'unknown'})"
+)
+CLIENT_HEADER = "X-Litescrape-Client"
+CLIENT_HEADER_VALUE = f"python-sdk/{__version__}"
 SELECTOR_LOOP_CAP = 500
 BACKOFF_CAP = 30.0
 CONNECT_TIMEOUT = 10.0
@@ -56,7 +66,11 @@ def _per_loop(registry: dict[int, _LoopEntry]) -> dict[Any, Any]:
 def _make_client(base_url: str) -> httpx.AsyncClient:
     return httpx.AsyncClient(
         base_url=base_url,
-        headers={"Accept": "application/json", "User-Agent": f"litescrape-sdk/{__version__}"},
+        headers={
+            "Accept": "application/json",
+            "User-Agent": USER_AGENT,
+            CLIENT_HEADER: CLIENT_HEADER_VALUE,
+        },
         limits=httpx.Limits(max_connections=None, max_keepalive_connections=None),
         timeout=httpx.Timeout(120.0, connect=CONNECT_TIMEOUT),
     )
