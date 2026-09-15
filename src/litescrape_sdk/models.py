@@ -124,6 +124,8 @@ class _GoogleSearchFields(_GoogleLocale):
     safe: Literal["active", "off"] | None = None
     nfpr: Flag | None = None
     filter: Flag | None = None
+    pws: Flag | None = None
+    peek_pws: Flag | None = None
     tbm: Literal["lcl", "vid", "nws", "shop", "pts"] | None = None
     start: int | None = None
     num: int | None = None
