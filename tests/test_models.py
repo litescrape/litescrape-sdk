@@ -17,6 +17,7 @@ from litescrape_sdk import (
     DuckDuckGoSearch,
     GoogleAds,
     GoogleAiMode,
+    GoogleAiOverview,
     GoogleMaps,
     GoogleReviews,
     GoogleSearch,
@@ -136,6 +137,8 @@ def test_numbers_coerce_to_strings_for_string_fields():
 
 def test_flag_and_enum_coercion():
     assert GoogleSearch(q="x", nfpr=False, filter=0).query_params() == {"q": "x", "nfpr": "0", "filter": "0"}
+    assert GoogleSearch(q="x", pws=0, peek_pws=True).query_params() == {"q": "x", "pws": "0", "peek_pws": "1"}
+    assert GoogleAiOverview(q="x", pws="0").query_params() == {"q": "x", "pws": "0"}
     assert GoogleShopping(q="x", sort_by=2).query_params()["sort_by"] == "2"
     assert DuckDuckGoSearch(q="x", safe=-1).query_params()["safe"] == "-1"
     assert BingSearch(q="x", engine="bing").query_params() == {"engine": "bing", "q": "x"}
@@ -150,6 +153,8 @@ def test_flag_and_enum_coercion():
         ({"endpoint": "google_search", "q": "x", "device": "Desktop"}, "device"),
         ({"endpoint": "google_search", "q": "x", "safe": "on"}, "safe"),
         ({"endpoint": "google_search", "q": "x", "nfpr": "2"}, "nfpr"),
+        ({"endpoint": "google_search", "q": "x", "pws": "2"}, "pws"),
+        ({"endpoint": "google_ai_overview", "q": "x", "peek_pws": "yes"}, "peek_pws"),
         ({"endpoint": "google_search", "q": "x", "num": "ten"}, "num"),
         ("not a request", ""),
     ],
