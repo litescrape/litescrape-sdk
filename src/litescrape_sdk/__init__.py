@@ -50,6 +50,7 @@ from .models import (
     TripadvisorPlace,
     TripadvisorReviews,
     TripadvisorSearch,
+    WebFetch,
     YelpReviews,
     YelpSearch,
 )
@@ -108,4 +109,5 @@ __all__ = [
     "TripadvisorReviews",
     "AppleMapsPlaces",
     "AppleMapsReviews",
+    "WebFetch",
 ]

@@ -433,5 +433,21 @@
     "product_id",
     "sort",
     "timeout"
+  ],
+  "web_fetch": [
+    "locale",
+    "page_timeout",
+    "remove_selector",
+    "respond_with",
+    "target_selector",
+    "timeout",
+    "url",
+    "user_agent",
+    "wait_for_selector",
+    "wait_until",
+    "with_iframe",
+    "with_images",
+    "with_links",
+    "with_shadow_dom"
   ]
 }

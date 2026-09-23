@@ -75,6 +75,28 @@ AI Overview and other result groups. The default is the full response; fast mode
 is unavailable on the dedicated AI Overview endpoint. Requires an API deployment
 that supports `fast_mode`.
 
+`num` on `GoogleSearch` and `GoogleAiOverview` accepts 1 to 10, the most Google returns on one
+page. Use `start` to page further.
+
+## Fetch (Alpha)
+
+`WebFetch` renders a public web page in a fresh browser and returns it as Markdown, HTML, plain
+text, or a full-page PNG screenshot encoded as base64.
+
+```python
+from litescrape_sdk import WebFetch, scrape
+
+[result] = scrape([WebFetch(url="https://example.com", respond_with="markdown", target_selector="article")])
+page = result.raise_for_error()
+print(page["title"], page["status_code"])
+print(page["content"])
+```
+
+`status_code` is the status the site returned. A rendered 404 page is still a successful, billed
+capture, so check it before using `content`. Options: `respond_with`, `target_selector`,
+`remove_selector`, `wait_for_selector`, `wait_until`, `page_timeout`, `locale`,
+`user_agent`, `with_links`, `with_images`, `with_iframe` and `with_shadow_dom`.
+
 ## Request deadlines
 
 Set `request_timeout` on `scrape` or `ascrape` to apply a server deadline to every item.

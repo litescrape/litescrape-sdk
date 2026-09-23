@@ -128,7 +128,7 @@ class _GoogleSearchFields(_GoogleLocale):
     peek_pws: Flag | None = None
     tbm: Literal["lcl", "vid", "nws", "shop", "pts"] | None = None
     start: int | None = None
-    num: int | None = None
+    num: Annotated[int, Field(ge=1, le=10)] | None = None
     device: Device | None = None
     oq: str | None = None
     gs_lp: str | None = None
@@ -619,6 +619,29 @@ class AppleAppStoreReviews(ScrapeRequest, AppleReviewsRequest):
     endpoint: Literal["apple_app_store_reviews"] = "apple_app_store_reviews"
 
 
+Selector = Annotated[str, Field(min_length=1, max_length=2048)]
+
+
+class WebFetch(ScrapeRequest):
+    """Alpha. GET /api/web/fetch: a public page as Markdown, HTML, text, or a base64 PNG screenshot."""
+
+    path: ClassVar[str] = "/api/web/fetch"
+    endpoint: Literal["web_fetch"] = "web_fetch"
+    url: Annotated[str, Field(min_length=1, max_length=8192)]
+    respond_with: Literal["markdown", "html", "text", "screenshot"] | None = None
+    target_selector: Selector | None = None
+    remove_selector: Selector | None = None
+    wait_for_selector: Selector | None = None
+    wait_until: Literal["commit", "domcontentloaded", "load", "networkidle"] | None = None
+    page_timeout: Annotated[int, Field(ge=1, le=180)] | None = None
+    locale: Annotated[str, Field(min_length=2, max_length=64)] | None = None
+    user_agent: Annotated[str, Field(min_length=1, max_length=1024)] | None = None
+    with_links: Literal["inlined", "referenced", "collapsed", "shortcut", "discarded"] | None = None
+    with_images: Literal["all", "alt", "none"] | None = None
+    with_iframe: StrictBool | Literal["true", "false", "quoted"] | None = None
+    with_shadow_dom: StrictBool | Literal["true", "false"] | None = None
+
+
 _REQUEST_CLASSES: tuple[type[ScrapeRequest], ...] = (
     GoogleSearch,
     GoogleAiOverview,
@@ -654,6 +677,7 @@ _REQUEST_CLASSES: tuple[type[ScrapeRequest], ...] = (
     AppleAppStoreSearch,
     AppleAppStoreProduct,
     AppleAppStoreReviews,
+    WebFetch,
 )
 
 AnyRequest = Annotated[
@@ -690,7 +714,8 @@ AnyRequest = Annotated[
     | GooglePlayReviews
     | AppleAppStoreSearch
     | AppleAppStoreProduct
-    | AppleAppStoreReviews,
+    | AppleAppStoreReviews
+    | WebFetch,
     Field(discriminator="endpoint"),
 ]
 

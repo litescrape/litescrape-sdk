@@ -25,6 +25,7 @@ from litescrape_sdk import (
     GoogleShoppingProduct,
     TripadvisorPlace,
     TripadvisorSearch,
+    WebFetch,
     YelpSearch,
 )
 from litescrape_sdk.models import _REQUEST_CLASSES, REQUEST_ADAPTER
@@ -66,12 +67,13 @@ PATHS = {
     "tripadvisor_reviews": "/api/tripadvisor/reviews",
     "apple_maps_places": "/api/apple/maps/places",
     "apple_maps_reviews": "/api/apple/maps/reviews",
+    "web_fetch": "/api/web/fetch",
 }
 
 
 def test_registry_covers_every_endpoint():
     assert set(REQUEST_TYPES) == set(ALLOWLISTS) == set(PATHS)
-    assert len(REQUEST_TYPES) == 34
+    assert len(REQUEST_TYPES) == 35
     assert {slug: cls.path for slug, cls in REQUEST_TYPES.items()} == PATHS
 
 
@@ -228,3 +230,53 @@ def test_presence_rules(cls, kwargs, ok):
     else:
         with pytest.raises(pydantic.ValidationError):
             cls(**kwargs)
+
+
+@pytest.mark.parametrize("model", [GoogleSearch, GoogleAiOverview])
+def test_google_search_num_is_limited_to_ten(model):
+    assert model(q="coffee", num=10).query_params()["num"] == "10"
+    assert model(q="coffee", num=1).query_params()["num"] == "1"
+    for value in (0, 11, 100):
+        with pytest.raises(pydantic.ValidationError):
+            model(q="coffee", num=value)
+
+
+def test_web_fetch_serializes_get_options():
+    request = WebFetch(
+        url="https://example.com",
+        respond_with="markdown",
+        target_selector="article",
+        page_timeout=30,
+        with_iframe="quoted",
+        with_shadow_dom=True,
+        with_links="referenced",
+    )
+    assert request.path == "/api/web/fetch"
+    assert request.query_params() == {
+        "url": "https://example.com",
+        "respond_with": "markdown",
+        "target_selector": "article",
+        "page_timeout": "30",
+        "with_iframe": "quoted",
+        "with_shadow_dom": "true",
+        "with_links": "referenced",
+    }
+    assert REQUEST_ADAPTER.validate_python(
+        {"endpoint": "web_fetch", "url": "https://example.com"}
+    ) == WebFetch(url="https://example.com")
+
+
+@pytest.mark.parametrize(
+    "fields",
+    [
+        {},
+        {"url": ""},
+        {"url": "https://example.com", "respond_with": "pdf"},
+        {"url": "https://example.com", "page_timeout": 181},
+        {"url": "https://example.com", "with_images": "some"},
+        {"url": "https://example.com", "viewport": {"width": 10, "height": 10}},
+    ],
+)
+def test_web_fetch_rejects_invalid_options(fields):
+    with pytest.raises(pydantic.ValidationError):
+        WebFetch(**fields)
