@@ -164,7 +164,10 @@ class GoogleSearch(_GoogleSearchFields):
 
 
 class GoogleAiOverview(_GoogleSearchFields):
-    """GET /api/google/ai-overview (404 not_found when Google shows no overview)"""
+    """GET /api/google/ai-overview
+
+    ``ai_overview`` is None and the call is not billed when Google shows no overview.
+    """
 
     path: ClassVar[str] = "/api/google/ai-overview"
     endpoint: Literal["google_ai_overview"] = "google_ai_overview"

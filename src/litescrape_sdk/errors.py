@@ -72,7 +72,7 @@ class PaymentRequiredError(APIError):
 
 
 class NotFoundError(APIError):
-    """404: the resource does not exist, for example no AI Overview for a query."""
+    """404: the resource does not exist."""
 
 
 class RateLimitError(APIError):

@@ -321,12 +321,13 @@ def test_single_item_call_shows_no_bar(mock_api, capfd):
     assert capfd.readouterr().err == ""
 
 
-def test_ai_overview_404_is_a_result(mock_api, runner):
-    mock_api.queue(AI_OVERVIEW, envelope(404, "not_found"))
+def test_ai_overview_without_an_overview_is_a_successful_result(mock_api, runner):
+    body = {"search_metadata": {"id": "ok", "ai_overview_state": "not_served"}, "ai_overview": None}
+    mock_api.queue(AI_OVERVIEW, httpx.Response(200, json=body, headers={"x-litescrape-billed": "false"}))
     (result,) = runner([GoogleAiOverview(q="nothing here")])
-    assert isinstance(result.error, NotFoundError) and result.attempts == 1
-    with pytest.raises(NotFoundError):
-        result.raise_for_error()
+    assert result.ok and result.attempts == 1
+    assert result.raise_for_error()["ai_overview"] is None
+    assert result.data["search_metadata"]["ai_overview_state"] == "not_served"
 
 
 def test_raise_for_error_returns_data(mock_api, runner):

@@ -325,7 +325,7 @@ def scrape(
 
     Per-item failures never raise. ``Result.ok`` is False and ``Result.error`` holds the exception: an
     ``APIError`` subclass with ``status_code``, ``error_code``, and ``request_id`` for API envelopes
-    (``NotFoundError`` for a 404, for example Google AI Overview when no overview exists), or
+    (``NotFoundError`` for a 404), or
     ``TransportError`` when no usable response arrived. ``Result.raise_for_error()`` raises it or returns
     ``Result.data``. A 401, 402, or disabled-key error seen mid-batch is copied to every item not yet
     started, without further requests.
