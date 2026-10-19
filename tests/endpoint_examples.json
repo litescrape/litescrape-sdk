@@ -1,0 +1,547 @@
+{
+  "/api/google/search": {
+    "q": "python documentation",
+    "num": 3,
+    "fast_mode": true
+  },
+  "/api/google/ads": {
+    "q": "coffee maker",
+    "location": "Austin, Texas, United States"
+  },
+  "/api/google/ai-overview": {
+    "q": "why is the sky blue"
+  },
+  "/api/google/ai-mode": {
+    "q": "why is the sky blue",
+    "hl": "en",
+    "gl": "us"
+  },
+  "/api/google/gemini": {
+    "prompt": "Explain why the sky is blue in one sentence.",
+    "hl": "en"
+  },
+  "/api/google/local": {
+    "q": "coffee Austin Texas",
+    "hl": "en",
+    "gl": "us"
+  },
+  "/api/google/maps": {
+    "q": "787 Coffee New York",
+    "type": "search",
+    "hl": "en",
+    "gl": "us"
+  },
+  "/api/google/reviews": {
+    "data_id": "0x88e5b787f92eb419:0x837211a455038baa",
+    "num": 2,
+    "sort_by": "newestFirst"
+  },
+  "/api/google/contributor-reviews": {
+    "contributor_id": "110382514725174877672",
+    "limit": 2
+  },
+  "/api/google/maps/posts": {
+    "data_id": "0x88e5b787f92eb419:0x837211a455038baa"
+  },
+  "/api/google/maps/photo-meta": {
+    "data_id": "CIABIhAAQr6KrxiC_knILBjf2RxL",
+    "hl": "en"
+  },
+  "/api/google/maps/popular-times": {
+    "place_id": "ChIJk2wKz7XHwoARxvQQWiJGyok"
+  },
+  "/api/google/shopping": {
+    "q": "coffee maker",
+    "num": 3,
+    "hl": "en",
+    "gl": "us"
+  },
+  "/api/google/shopping/product": {
+    "q": "coffee maker",
+    "gpcid": "16418087637395758399"
+  },
+  "/api/google/shopping/merchant-urls": {
+    "gl": "us",
+    "hl": "en",
+    "products": [
+      {
+        "gpcid": "2786756917538688235",
+        "headline_offer_docid": "5148952067814683768",
+        "merchant": "Target"
+      }
+    ]
+  },
+  "/api/google/play/apps": {
+    "q": "coffee",
+    "hl": "en",
+    "gl": "us"
+  },
+  "/api/google/play/games": {
+    "q": "chess",
+    "hl": "en",
+    "gl": "us"
+  },
+  "/api/google/play/books": {
+    "q": "coffee",
+    "hl": "en",
+    "gl": "us"
+  },
+  "/api/google/play/movies": {
+    "q": "inception",
+    "hl": "en",
+    "gl": "us"
+  },
+  "/api/google/play/product": {
+    "product_id": "com.duolingo"
+  },
+  "/api/google/play/reviews": {
+    "product_id": "com.duolingo",
+    "num": 3
+  },
+  "/api/apple/app-store/search": {
+    "term": "coffee",
+    "num": 3
+  },
+  "/api/apple/app-store/product": {
+    "product_id": "570060128"
+  },
+  "/api/apple/app-store/reviews": {
+    "product_id": "570060128"
+  },
+  "/api/apple/maps/places": {
+    "muid": "4372355869446211302"
+  },
+  "/api/apple/maps/reviews": {
+    "muid": "4560078147072908047"
+  },
+  "/api/bing/search": {
+    "q": "python documentation"
+  },
+  "/api/bing/images": {
+    "q": "red panda",
+    "count": 10,
+    "mkt": "en-US"
+  },
+  "/api/bing/maps": {
+    "q": "coffee Austin Texas",
+    "count": 3
+  },
+  "/api/duckduckgo/search": {
+    "q": "python documentation"
+  },
+  "/api/duckduckgo/maps": {
+    "q": "coffee",
+    "lat": "30.2672",
+    "lon": "-97.7431"
+  },
+  "/api/tripadvisor/search": {
+    "q": "coffee Austin Texas"
+  },
+  "/api/tripadvisor/place": {
+    "place_id": "437641"
+  },
+  "/api/tripadvisor/reviews": {
+    "place_id": "437641",
+    "num": 3
+  },
+  "/api/yelp/search": {
+    "find_desc": "coffee",
+    "find_loc": "Austin, TX"
+  },
+  "/api/yelp/reviews": {
+    "place_id": "dDz2erKJ_Z2HMur0tQ_iJA"
+  },
+  "/api/web/fetch": {
+    "url": "https://example.com",
+    "respond_with": "markdown"
+  },
+  "/api/web/screenshot": {
+    "url": "https://example.com",
+    "full_page": false
+  },
+  "/api/brave/search": {
+    "q": "python programming"
+  },
+  "/api/brave/ai-mode": {
+    "q": "How do rainbows form?",
+    "country": "us",
+    "language": "en",
+    "safeSearch": "moderate",
+    "units_of_measurement": "us"
+  },
+  "/api/google/images": {
+    "q": "red panda",
+    "num": 20,
+    "hl": "en",
+    "gl": "us"
+  },
+  "/api/baidu/search": {
+    "q": "python documentation",
+    "pn": 0,
+    "rn": 10
+  },
+  "/api/bing/shopping": {
+    "q": "coffee maker",
+    "mkt": "en-US"
+  },
+  "/api/bing/product": {
+    "product_token": "eyJ2IjoxLCJ1cmwiOiJodHRwczovL3d3dy5iaW5nLmNvbS9zaG9wL2VudGl0eWRldGFpbHM_cT1jb2ZmZWUrbWFrZXImZmlsdGVycz1zY2VuYXJpbyUzYSUyMjE3JTIyK2dUeXBlJTNhJTIyMyUyMitnSWQlM2ElMjIwMDZBQjU2MEIzMUEyOTQyMjAzNjdGN0U1ODNFM0RFQiUyMitnSWRIYXNoJTNhJTIyMTA0ODI1NDc0JTIyK2dHbG9iYWxPZmZlcklkcyUzYSUyMjkwODEyNDYyNDEzJTIyK05vblNwb25zb3JlZE9mZmVyJTNhJTIydHJ1ZSUyMiZvcmlnaW5JR1VJRD01MjFCNkQ5QzBDNTA0MDFGQjY4QUU5QjMxN0QwMDk5MyZJRz01MjFCNkQ5QzBDNTA0MDFGQjY4QUU5QjMxN0QwMDk5MyZJSUQ9Y29tbWVyY2UuNjk4OCJ9"
+  },
+  "/api/yandex/search": {
+    "text": "python documentation"
+  },
+  "/api/yandex/images": {
+    "text": "coffee"
+  },
+  "/api/yelp/place": {
+    "place_id": "arabica-brooklyn"
+  },
+  "/api/naver/search": {
+    "query": "coffee",
+    "where": "nexearch"
+  },
+  "/api/naver/ai-overview": {
+    "query": "coffee"
+  },
+  "/api/airbnb/search": {
+    "q": "Austin, TX",
+    "adults": 2,
+    "amenities": "wifi",
+    "page": 1
+  },
+  "/api/yahoo/search": {
+    "p": "coffee",
+    "yahoo_domain": "search.yahoo.com",
+    "b": 1
+  },
+  "/api/yahoo/images": {
+    "p": "coffee",
+    "yahoo_domain": "search.yahoo.com",
+    "b": 1
+  },
+  "/api/youtube/search": {
+    "q": "python tutorial",
+    "type": "video"
+  },
+  "/api/youtube/channel": {
+    "channel_id": "veritasium",
+    "tab": "videos"
+  },
+  "/api/instagram/search-popular": {
+    "query": "basketball"
+  },
+  "/api/instagram/profile": {
+    "handle": "instagram"
+  },
+  "/api/instagram/posts": {
+    "handle": "instagram"
+  },
+  "/api/instagram/post": {
+    "url": "https://www.instagram.com/p/C8rKmYvsrck/"
+  },
+  "/api/instagram/profile-post-count": {
+    "handle": "instagram"
+  },
+  "/api/instagram/embed": {
+    "handle": "instagram"
+  },
+  "/api/tiktok/profile": {
+    "handle": "tiktok"
+  },
+  "/api/tiktok/video": {
+    "url": "https://www.tiktok.com/@davidteathercodes/video/7106686413101468970"
+  },
+  "/api/tiktok/transcript": {
+    "url": "https://www.tiktok.com/@davidteathercodes/video/7106686413101468970"
+  },
+  "/api/tiktok/search-suggestions": {
+    "query": "coffee"
+  },
+  "/api/tiktok/user-live": {
+    "handle": "tiktok"
+  },
+  "/api/tiktok/live": {
+    "room_id": "7693676830666705678"
+  },
+  "/api/tiktok/song": {
+    "clip_id": "7106686378527787818"
+  },
+  "/api/tiktok/profile-videos": {
+    "handle": "tiktok",
+    "count": 3
+  },
+  "/api/tiktok/comments": {
+    "video_id": "7681307586901134622",
+    "count": 3
+  },
+  "/api/tiktok/comment-replies": {
+    "video_id": "7681307586901134622",
+    "comment_id": "7681330380372558606",
+    "count": 3
+  },
+  "/api/tiktok/following": {
+    "handle": "tiktok",
+    "count": 3
+  },
+  "/api/tiktok/followers": {
+    "handle": "tiktok",
+    "count": 3
+  },
+  "/api/tiktok/search-keyword": {
+    "query": "coffee",
+    "count": 3
+  },
+  "/api/tiktok/search-top": {
+    "query": "coffee",
+    "count": 3
+  },
+  "/api/tiktok/search-hashtag": {
+    "hashtag": "python",
+    "count": 3
+  },
+  "/api/tiktok/song-videos": {
+    "clip_id": "7106686378527787818",
+    "count": 3
+  },
+  "/api/tiktok/trending-feed": {
+    "count": 3
+  },
+  "/api/tiktok/collection-videos": {
+    "url": "https://www.tiktok.com/@kibblemaster808/collection/Want-to-go-7665668414573546258",
+    "count": 3
+  },
+  "/api/amazon/search": {
+    "k": "coffee"
+  },
+  "/api/amazon/product": {
+    "asin": "B072MQ5BRX"
+  },
+  "/api/amazon/autocomplete": {
+    "k": "coffee"
+  },
+  "/api/copilot/chat/completions": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is the weather near me right now?"
+      }
+    ],
+    "model": "copilot",
+    "stream": false,
+    "country": "US",
+    "state": "CA"
+  },
+  "/api/ebay/search": {
+    "_nkw": "lego star wars",
+    "_ipg": 25
+  },
+  "/api/ebay/product": {
+    "product_id": "305576857892"
+  },
+  "/api/ebay/seller": {
+    "seller_id": "antonline",
+    "type": "store",
+    "_ipg": 24
+  },
+  "/api/x/profile": {
+    "username": "OpenAI"
+  },
+  "/api/x/post": {
+    "post_id": "2107894997538525580"
+  },
+  "/api/x/user-posts": {
+    "username": "OpenAI"
+  },
+  "/api/x/community-posts": {
+    "community_id": "1926186499399139650"
+  },
+  "/api/x/community": {
+    "community_id": "1926186499399139650"
+  },
+  "/api/eventbrite/search": {
+    "location": "tx--austin",
+    "q": "music"
+  },
+  "/api/google/jobs": {
+    "q": "software engineer jobs in New York"
+  },
+  "/api/indeed/search": {
+    "q": "software engineer",
+    "location": "New York, NY"
+  },
+  "/api/glassdoor/search": {
+    "q": "software engineer",
+    "location_id": 1132348,
+    "location_type": "C"
+  },
+  "/api/ashby/search": {
+    "board": "ashby",
+    "q": "engineer"
+  },
+  "/api/ziprecruiter/search": {
+    "q": "software engineer",
+    "location": "New York, NY"
+  },
+  "/api/levels/search": {
+    "q": "software engineer"
+  },
+  "/api/walmart/search": {
+    "query": "coffee"
+  },
+  "/api/walmart/product": {
+    "url": "https://www.walmart.com/ip/5344812220"
+  },
+  "/api/homedepot/search": {
+    "query": "drill"
+  },
+  "/api/homedepot/product": {
+    "url": "https://www.homedepot.com/p/DEWALT-20V-MAX-Cordless-Drill-DCD771C2/204279858"
+  },
+  "/api/target/search": {
+    "query": "coffee",
+    "store_id": "1448"
+  },
+  "/api/target/product": {
+    "url": "https://www.target.com/p/starbucks-fall-blend-medium-roast-ground-coffee-10oz/-/A-16185604",
+    "store_id": "1448"
+  },
+  "/api/etsy/search": {
+    "query": "ceramic mug"
+  },
+  "/api/etsy/product": {
+    "url": "https://www.etsy.com/listing/1510223855/the-libby-travel-mug-hand-thrown-ceramic"
+  },
+  "/api/bestbuy/search": {
+    "query": "headphones",
+    "store_id": "7"
+  },
+  "/api/bestbuy/product": {
+    "url": "https://www.bestbuy.com/product/beats-studio-pro-wireless-noise-cancelling-over-the-ear-headphones-black/JJ8ZHR9K2T",
+    "store_id": "7"
+  },
+  "/api/wayfair/search": {
+    "query": "desk"
+  },
+  "/api/wayfair/product": {
+    "url": "https://www.wayfair.com/shop-product-type/pdp/george-oliver-caidence-2-drawer-writing-desk-with-solid-wood-legs-w005949248.html"
+  },
+  "/api/aliexpress/search": {
+    "query": "coffee mug"
+  },
+  "/api/aliexpress/product": {
+    "url": "https://www.aliexpress.com/item/1005008176579188.html"
+  },
+  "/api/kroger/search": {
+    "query": "coffee",
+    "store_id": "01600273"
+  },
+  "/api/kroger/product": {
+    "url": "https://www.kroger.com/p/maxwell-house-original-roast-ground-coffee-canister/0004300009422",
+    "store_id": "01600273"
+  },
+  "/api/sprouts/search": {
+    "query": "coffee",
+    "store_id": "17650"
+  },
+  "/api/sprouts/product": {
+    "url": "https://shop.sprouts.com/store/sprouts/products/79995164-medium-roast-coffee-44oz",
+    "store_id": "17650"
+  },
+  "/api/wholefoods/search": {
+    "query": "coffee",
+    "store_id": "10233"
+  },
+  "/api/wholefoods/product": {
+    "url": "https://www.wholefoodsmarket.com/product/groundwork-coffee-co-organic-cold-brew-coffee-concentrate-32-fz-b079ltr61q",
+    "store_id": "10233"
+  },
+  "/api/ikea/search": {
+    "query": "desk",
+    "store_id": "170"
+  },
+  "/api/ikea/product": {
+    "url": "https://www.ikea.com/us/en/p/billy-bookcase-white-20522046/",
+    "store_id": "170"
+  },
+  "/api/zillow/search": {
+    "q": "Seattle, WA",
+    "max_price": 800000,
+    "min_beds": 2
+  },
+  "/api/zillow/property": {
+    "url": "https://www.zillow.com/homedetails/743-N-74th-St-Seattle-WA-98103/48868689_zpid/"
+  },
+  "/api/zillow/locations": {
+    "q": "Seattle, WA",
+    "type": "regions",
+    "limit": 5
+  },
+  "/api/redfin/search": {
+    "region_id": 16163,
+    "region_type": 6,
+    "max_price": 800000,
+    "min_beds": 2,
+    "limit": 5
+  },
+  "/api/redfin/property": {
+    "url": "https://www.redfin.com/WA/Seattle/1120-8th-Ave-98101/unit-1603/home/14602"
+  },
+  "/api/realtor/search": {
+    "url": "https://www.realtor.com/realestateandhomes-search/Austin_TX/",
+    "limit": 5
+  },
+  "/api/realtor/property": {
+    "url": "https://www.realtor.com/realestateandhomes-detail/7901-Gilwice-Ln_Austin_TX_78744_M74493-23665"
+  },
+  "/api/apartments/search": {
+    "url": "https://www.apartments.com/austin-tx/"
+  },
+  "/api/apartments/property": {
+    "url": "https://www.apartments.com/edison-austin-austin-tx/40n18nj/"
+  },
+  "/api/homes/search": {
+    "url": "https://www.homes.com/austin-tx/"
+  },
+  "/api/homes/property": {
+    "url": "https://www.homes.com/property/7516-windrush-dr-austin-tx/x5zewgn876r6t/"
+  },
+  "/api/amazon/featured-reviews": {
+    "asin": "B00FLYWNYQ",
+    "amazon_domain": "amazon.com"
+  },
+  "/api/amazon/media-reviews": {
+    "asin": "B00FLYWNYQ",
+    "view": "media"
+  },
+  "/api/facebook/search-pages": {
+    "query": "NASA",
+    "limit": 15,
+    "country": "US",
+    "ad_type": "ALL"
+  },
+  "/api/facebook/search-profiles": {
+    "query": "Nasa",
+    "limit": 12
+  },
+  "/api/facebook/hashtag-posts": {
+    "tag": "nasa",
+    "limit": 20
+  },
+  "/api/facebook/post": {
+    "url": "https://www.facebook.com/NASA/posts/1587860636042640/"
+  },
+  "/api/facebook/page-posts": {
+    "handle": "NASA"
+  },
+  "/api/facebook/marketplace-browse": {
+    "location": "austin",
+    "query": "bicycle",
+    "radius_km": 20,
+    "min_price": 10,
+    "max_price": 200,
+    "limit": 20
+  },
+  "/api/facebook/reel": {
+    "url": "https://www.facebook.com/reel/1380134307388381/"
+  }
+}

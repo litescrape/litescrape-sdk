@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import asyncio
+import json
 
 import httpx
 import pytest
 
-from litescrape_sdk import GoogleSearch, ascrape, scrape
+from litescrape_sdk import GoogleSearch, IndeedSearch, WebFetch, ascrape, scrape
 from litescrape_sdk._batch import JobCache, cache_keys
 
 
@@ -283,3 +284,23 @@ def test_cache_schema_upgrade_preserves_old_submission_intents(tmp_path):
         "batch_size": 10,
     }
     assert cache.prepare("key", True, "different-batch-id", 20) == entry
+
+
+def test_job_bodies_use_query_values_or_native_json_by_endpoint(mock_api, tmp_path):
+    backend(mock_api)
+    items = [
+        IndeedSearch(q="engineer", employer_keys=["a1"], limit=5),
+        WebFetch(url="https://example.com", page_timeout=30, target_selector=["main"], timeout=20),
+    ]
+    results = scrape(items, batched=True, cache_path=tmp_path / "jobs.db", tqdm_disable=True)
+    assert all(r.ok for r in results)
+    posts = {call.url.path: json.loads(call.content) for call in mock_api.calls if call.method == "POST"}
+    assert posts == {
+        "/api/indeed/search/async": {"q": "engineer", "limit": "5", "employer_keys": '["a1"]'},
+        "/api/web/fetch/async": {
+            "timeout": 20.0,
+            "url": "https://example.com",
+            "page_timeout": 30,
+            "target_selector": ["main"],
+        },
+    }

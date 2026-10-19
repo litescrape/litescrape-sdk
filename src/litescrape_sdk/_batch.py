@@ -103,13 +103,18 @@ class JobCache:
             )
 
 
+def _payload(item) -> dict[str, Any]:
+    # POST endpoints take native JSON types; the rest accept their query parameters as the job body.
+    return item.body() if item.method == "POST" else item.query_params()
+
+
 def cache_keys(items, api_key: str, base_url: str) -> list[str]:
     identity = hashlib.sha256(api_key.encode()).hexdigest()
     occurrences: Counter[str] = Counter()
     keys = []
     for item in items:
         canonical = json.dumps(
-            [identity, base_url, item.path, item.query_params()], sort_keys=True, separators=(",", ":")
+            [identity, base_url, item.path, _payload(item)], sort_keys=True, separators=(",", ":")
         )
         occurrence = occurrences[canonical]
         occurrences[canonical] += 1
@@ -170,7 +175,7 @@ async def run(
             timeout=timeout,
             semaphore=semaphore,
             method="POST",
-            json_body=items[index].query_params(),
+            json_body=_payload(items[index]),
             accepted_statuses=(200, 202),
         )
         if outcome.error is None:

@@ -184,16 +184,6 @@
     "next_page_token",
     "timeout"
   ],
-  "google_maps_web_results": [
-    "device",
-    "gl",
-    "google_domain",
-    "hl",
-    "ibp",
-    "q",
-    "start",
-    "timeout"
-  ],
   "google_reviews": [
     "data_id",
     "gl",
@@ -239,6 +229,7 @@
     "nfpr",
     "num",
     "oq",
+    "page_token",
     "peek_pws",
     "pws",
     "q",
@@ -435,19 +426,884 @@
     "timeout"
   ],
   "web_fetch": [
+    "assert_status_code",
+    "base",
+    "detach_invisibles",
+    "engine",
+    "inject_frame_script",
+    "inject_page_script",
+    "keep_img_data_url",
+    "locale",
+    "markdown",
+    "markdown_chunking",
+    "max_tokens",
+    "no_gfm",
+    "page_timeout",
+    "preset",
+    "referer",
+    "remove_overlay",
+    "remove_selector",
+    "respond_timing",
+    "respond_with",
+    "retain_images",
+    "retain_links",
+    "retain_media",
+    "robots_txt",
+    "set_cookies",
+    "target_selector",
+    "timeout",
+    "token_budget",
+    "url",
+    "user_agent",
+    "viewport",
+    "wait_for_selector",
+    "with_iframe",
+    "with_images_summary",
+    "with_links_summary",
+    "with_shadow_dom"
+  ],
+  "google_gemini": [
+    "continuable",
+    "hl",
+    "prompt",
+    "subsequent_request_token",
+    "timeout"
+  ],
+  "google_shopping_merchant_urls": [
+    "gl",
+    "hl",
+    "products",
+    "timeout"
+  ],
+  "google_images": [
+    "device",
+    "gl",
+    "hl",
+    "num",
+    "q",
+    "safe",
+    "start",
+    "tbs",
+    "timeout"
+  ],
+  "google_jobs": [
+    "gl",
+    "hl",
+    "include_filters",
+    "lat",
+    "location",
+    "lon",
+    "page",
+    "page_token",
+    "q",
+    "radius",
+    "tbs",
+    "timeout",
+    "uds",
+    "uule"
+  ],
+  "bing_images": [
+    "age",
+    "aspect",
+    "cc",
+    "color2",
+    "count",
+    "face",
+    "first",
+    "imagesize",
+    "license",
+    "mkt",
+    "photo",
+    "q",
+    "qft",
+    "safeSearch",
+    "timeout"
+  ],
+  "bing_shopping": [
+    "cc",
+    "efirst",
+    "filters",
+    "mkt",
+    "q",
+    "timeout"
+  ],
+  "bing_product": [
+    "product_token",
+    "timeout"
+  ],
+  "yelp_place": [
+    "business_alert",
+    "full_menu",
+    "menu_name",
+    "place_id",
+    "timeout",
+    "yelp_domain"
+  ],
+  "web_screenshot": [
+    "assert_status_code",
+    "detach_invisibles",
+    "full_page",
+    "inject_frame_script",
+    "inject_page_script",
     "locale",
     "page_timeout",
-    "remove_selector",
-    "respond_with",
-    "target_selector",
+    "referer",
+    "remove_overlay",
+    "respond_timing",
+    "robots_txt",
+    "set_cookies",
     "timeout",
     "url",
     "user_agent",
-    "wait_for_selector",
-    "wait_until",
-    "with_iframe",
-    "with_images",
-    "with_links",
-    "with_shadow_dom"
+    "viewport",
+    "wait_for_selector"
+  ],
+  "brave_search": [
+    "country",
+    "offset",
+    "q",
+    "safesearch",
+    "spellcheck",
+    "tf",
+    "timeout",
+    "ui_lang"
+  ],
+  "brave_ai_mode": [
+    "continuation_token",
+    "country",
+    "language",
+    "lat",
+    "location",
+    "lon",
+    "q",
+    "safeSearch",
+    "timeout",
+    "units_of_measurement"
+  ],
+  "baidu_search": [
+    "pn",
+    "q",
+    "rn",
+    "timeout"
+  ],
+  "yandex_search": [
+    "family_mode",
+    "fix_typo",
+    "groups_on_page",
+    "lang",
+    "lr",
+    "p",
+    "period",
+    "sort_mode",
+    "text",
+    "timeout",
+    "yandex_domain"
+  ],
+  "yandex_images": [
+    "color",
+    "crop",
+    "crop_id",
+    "family_mode",
+    "file_type",
+    "height",
+    "image_type",
+    "orientation",
+    "p",
+    "recent",
+    "site",
+    "tab",
+    "text",
+    "timeout",
+    "url",
+    "width",
+    "yandex_domain"
+  ],
+  "naver_search": [
+    "num",
+    "page",
+    "period",
+    "query",
+    "sort_by",
+    "start",
+    "timeout",
+    "where"
+  ],
+  "naver_ai_overview": [
+    "page_token",
+    "query",
+    "timeout"
+  ],
+  "copilot_chat_completions": [
+    "country",
+    "messages",
+    "model",
+    "state",
+    "stream",
+    "timeout"
+  ],
+  "yahoo_search": [
+    "b",
+    "d",
+    "device",
+    "fr2",
+    "p",
+    "timeout",
+    "vc",
+    "vf",
+    "vl",
+    "vm",
+    "vs",
+    "yahoo_domain"
+  ],
+  "yahoo_images": [
+    "b",
+    "device",
+    "imga",
+    "imgc",
+    "imgf",
+    "imgl",
+    "imgsz",
+    "imgt",
+    "imgty",
+    "p",
+    "timeout",
+    "yahoo_domain"
+  ],
+  "airbnb_search": [
+    "accessibility_features",
+    "adults",
+    "airbnb_domain",
+    "amenities",
+    "bathrooms",
+    "bedrooms",
+    "beds",
+    "check_in_date",
+    "check_out_date",
+    "children",
+    "currency",
+    "guest_favorite",
+    "host_languages",
+    "infants",
+    "instant_book",
+    "luxe",
+    "map_bounds",
+    "max_price",
+    "min_price",
+    "page",
+    "pets",
+    "property_types",
+    "q",
+    "room_type",
+    "self_check_in",
+    "timeout"
+  ],
+  "eventbrite_search": [
+    "location",
+    "page",
+    "q",
+    "timeout"
+  ],
+  "indeed_search": [
+    "any_attribute_keys",
+    "attribute_keys",
+    "country",
+    "easy_apply",
+    "education",
+    "employer_keys",
+    "experience_level",
+    "experience_months_max",
+    "experience_months_min",
+    "fromage",
+    "job_language",
+    "job_type",
+    "limit",
+    "locale",
+    "location",
+    "no_experience",
+    "page",
+    "page_token",
+    "q",
+    "radius",
+    "radius_unit",
+    "salary_max",
+    "salary_min",
+    "sort",
+    "timeout",
+    "workplace"
+  ],
+  "glassdoor_search": [
+    "city_id",
+    "company_id",
+    "company_sizes",
+    "easy_apply",
+    "from_age",
+    "include_filters",
+    "industry_id",
+    "job_type",
+    "job_types",
+    "location",
+    "location_country",
+    "location_id",
+    "location_type",
+    "min_rating",
+    "occupation_id",
+    "page",
+    "page_token",
+    "q",
+    "radius",
+    "remote",
+    "salary_max",
+    "salary_min",
+    "seniority",
+    "sort",
+    "timeout"
+  ],
+  "ashby_search": [
+    "board",
+    "city",
+    "country",
+    "department",
+    "employment_type",
+    "include_compensation",
+    "limit",
+    "location",
+    "page",
+    "q",
+    "region",
+    "remote",
+    "team",
+    "timeout",
+    "workplace_type"
+  ],
+  "ziprecruiter_search": [
+    "days",
+    "easy_apply",
+    "employment_types",
+    "experience_level",
+    "location",
+    "location_type",
+    "page",
+    "q",
+    "radius",
+    "salary_max",
+    "salary_min",
+    "timeout"
+  ],
+  "levels_search": [
+    "companies",
+    "company",
+    "company_sizes",
+    "company_types",
+    "company_valuations",
+    "employment_types",
+    "job_families",
+    "jobs_per_company",
+    "levels",
+    "limit",
+    "location",
+    "locations",
+    "min_base_compensation",
+    "min_total_compensation",
+    "page",
+    "perk_ids",
+    "posted_within",
+    "posted_within_unit",
+    "q",
+    "sort",
+    "timeout",
+    "work_arrangements"
+  ],
+  "zillow_search": [
+    "map_bounds",
+    "max_beds",
+    "max_price",
+    "max_sqft",
+    "min_baths",
+    "min_beds",
+    "min_price",
+    "min_sqft",
+    "page",
+    "property_type",
+    "q",
+    "sort",
+    "status",
+    "timeout"
+  ],
+  "zillow_property": [
+    "timeout",
+    "url",
+    "zpid"
+  ],
+  "zillow_locations": [
+    "limit",
+    "page_token",
+    "q",
+    "timeout",
+    "type"
+  ],
+  "redfin_search": [
+    "limit",
+    "map_bounds",
+    "max_beds",
+    "max_price",
+    "max_sqft",
+    "min_baths",
+    "min_beds",
+    "min_price",
+    "min_sqft",
+    "property_type",
+    "region_id",
+    "region_type",
+    "sold_within_days",
+    "sort",
+    "status",
+    "timeout",
+    "url"
+  ],
+  "redfin_property": [
+    "timeout",
+    "url"
+  ],
+  "realtor_search": [
+    "limit",
+    "timeout",
+    "url"
+  ],
+  "realtor_property": [
+    "timeout",
+    "url"
+  ],
+  "apartments_search": [
+    "timeout",
+    "url"
+  ],
+  "apartments_property": [
+    "timeout",
+    "url"
+  ],
+  "homes_search": [
+    "timeout",
+    "url"
+  ],
+  "homes_property": [
+    "timeout",
+    "url"
+  ],
+  "facebook_search_pages": [
+    "ad_type",
+    "country",
+    "limit",
+    "query",
+    "timeout"
+  ],
+  "facebook_search_profiles": [
+    "limit",
+    "query",
+    "timeout"
+  ],
+  "facebook_hashtag_posts": [
+    "continuation_token",
+    "limit",
+    "tag",
+    "timeout"
+  ],
+  "facebook_post": [
+    "timeout",
+    "url"
+  ],
+  "facebook_page_posts": [
+    "handle",
+    "timeout"
+  ],
+  "facebook_marketplace_browse": [
+    "condition",
+    "continuation_token",
+    "days_since_listed",
+    "limit",
+    "location",
+    "max_price",
+    "min_price",
+    "query",
+    "radius_km",
+    "sort_by",
+    "timeout"
+  ],
+  "facebook_reel": [
+    "timeout",
+    "url"
+  ],
+  "youtube_search": [
+    "duration",
+    "features",
+    "gl",
+    "hl",
+    "page_token",
+    "q",
+    "sort_by",
+    "sp",
+    "timeout",
+    "type",
+    "upload_date"
+  ],
+  "youtube_channel": [
+    "about",
+    "channel_id",
+    "gl",
+    "hl",
+    "next_page_token",
+    "search_query",
+    "sort",
+    "tab",
+    "timeout"
+  ],
+  "amazon_search": [
+    "amazon_domain",
+    "dc",
+    "delivery_zip",
+    "k",
+    "language",
+    "node",
+    "page",
+    "rh",
+    "s",
+    "shipping_location",
+    "timeout"
+  ],
+  "amazon_product": [
+    "all_related_products",
+    "amazon_domain",
+    "asin",
+    "delivery_zip",
+    "language",
+    "other_sellers",
+    "shipping_location",
+    "timeout"
+  ],
+  "amazon_autocomplete": [
+    "amazon_department",
+    "amazon_domain",
+    "k",
+    "timeout"
+  ],
+  "amazon_featured_reviews": [
+    "amazon_domain",
+    "asin",
+    "timeout"
+  ],
+  "amazon_media_reviews": [
+    "amazon_domain",
+    "asin",
+    "page_token",
+    "timeout",
+    "view"
+  ],
+  "x_profile": [
+    "timeout",
+    "username"
+  ],
+  "x_post": [
+    "post_id",
+    "timeout"
+  ],
+  "x_user_posts": [
+    "cursor",
+    "timeout",
+    "username"
+  ],
+  "x_community": [
+    "community_id",
+    "timeout"
+  ],
+  "x_community_posts": [
+    "community_id",
+    "timeout"
+  ],
+  "ebay_search": [
+    "LH_ItemCondition",
+    "LH_PrefLoc",
+    "_blrs",
+    "_dmd",
+    "_ipg",
+    "_nkw",
+    "_pgn",
+    "_salic",
+    "_sasl",
+    "_saslop",
+    "_sop",
+    "_stpos",
+    "_udhi",
+    "_udlo",
+    "buying_format",
+    "category_id",
+    "ebay_domain",
+    "popular_filters",
+    "show_only",
+    "timeout"
+  ],
+  "ebay_product": [
+    "ebay_domain",
+    "lang",
+    "locale",
+    "product_id",
+    "shipping_country",
+    "timeout"
+  ],
+  "ebay_seller": [
+    "LH_ItemCondition",
+    "_ipg",
+    "_pgn",
+    "_sop",
+    "buying_format",
+    "ebay_domain",
+    "free_shipping",
+    "seller_id",
+    "timeout",
+    "type"
+  ],
+  "tiktok_profile": [
+    "handle",
+    "timeout",
+    "user_id"
+  ],
+  "tiktok_video": [
+    "timeout",
+    "url",
+    "video_id"
+  ],
+  "tiktok_transcript": [
+    "language",
+    "timeout",
+    "url",
+    "video_id"
+  ],
+  "tiktok_search_suggestions": [
+    "query",
+    "timeout"
+  ],
+  "tiktok_user_live": [
+    "handle",
+    "timeout"
+  ],
+  "tiktok_live": [
+    "room_id",
+    "timeout"
+  ],
+  "tiktok_song": [
+    "clip_id",
+    "timeout"
+  ],
+  "tiktok_profile_videos": [
+    "count",
+    "cursor",
+    "handle",
+    "timeout",
+    "user_id"
+  ],
+  "tiktok_comments": [
+    "count",
+    "cursor",
+    "timeout",
+    "url",
+    "video_id"
+  ],
+  "tiktok_comment_replies": [
+    "comment_id",
+    "count",
+    "cursor",
+    "timeout",
+    "url",
+    "video_id"
+  ],
+  "tiktok_following": [
+    "count",
+    "cursor",
+    "handle",
+    "timeout",
+    "user_id"
+  ],
+  "tiktok_followers": [
+    "count",
+    "cursor",
+    "handle",
+    "timeout",
+    "user_id"
+  ],
+  "tiktok_search_keyword": [
+    "count",
+    "cursor",
+    "query",
+    "search_id",
+    "timeout"
+  ],
+  "tiktok_search_top": [
+    "count",
+    "cursor",
+    "query",
+    "search_id",
+    "timeout"
+  ],
+  "tiktok_search_hashtag": [
+    "count",
+    "cursor",
+    "hashtag",
+    "timeout"
+  ],
+  "tiktok_song_videos": [
+    "clip_id",
+    "count",
+    "cursor",
+    "timeout"
+  ],
+  "tiktok_trending_feed": [
+    "count",
+    "timeout"
+  ],
+  "tiktok_collection_videos": [
+    "collection_id",
+    "count",
+    "cursor",
+    "timeout",
+    "url"
+  ],
+  "instagram_profile": [
+    "handle",
+    "timeout",
+    "trim"
+  ],
+  "instagram_posts": [
+    "handle",
+    "next_max_id",
+    "num",
+    "timeout",
+    "trim"
+  ],
+  "instagram_post": [
+    "timeout",
+    "trim",
+    "url"
+  ],
+  "instagram_profile_post_count": [
+    "handle",
+    "timeout"
+  ],
+  "instagram_embed": [
+    "handle",
+    "timeout"
+  ],
+  "instagram_search_popular": [
+    "cursor",
+    "query",
+    "timeout"
+  ],
+  "walmart_search": [
+    "page",
+    "query",
+    "timeout"
+  ],
+  "walmart_product": [
+    "timeout",
+    "url"
+  ],
+  "homedepot_search": [
+    "page",
+    "query",
+    "timeout"
+  ],
+  "homedepot_product": [
+    "timeout",
+    "url"
+  ],
+  "target_search": [
+    "page",
+    "query",
+    "store_id",
+    "timeout"
+  ],
+  "target_product": [
+    "store_id",
+    "timeout",
+    "url"
+  ],
+  "etsy_search": [
+    "page",
+    "query",
+    "timeout"
+  ],
+  "etsy_product": [
+    "timeout",
+    "url"
+  ],
+  "bestbuy_search": [
+    "page",
+    "query",
+    "store_id",
+    "timeout"
+  ],
+  "bestbuy_product": [
+    "store_id",
+    "timeout",
+    "url"
+  ],
+  "wayfair_search": [
+    "page",
+    "query",
+    "timeout"
+  ],
+  "wayfair_product": [
+    "timeout",
+    "url"
+  ],
+  "aliexpress_search": [
+    "page",
+    "query",
+    "timeout"
+  ],
+  "aliexpress_product": [
+    "timeout",
+    "url"
+  ],
+  "kroger_search": [
+    "page",
+    "query",
+    "store_id",
+    "timeout"
+  ],
+  "kroger_product": [
+    "store_id",
+    "timeout",
+    "url"
+  ],
+  "sprouts_search": [
+    "page",
+    "query",
+    "store_id",
+    "timeout"
+  ],
+  "sprouts_product": [
+    "store_id",
+    "timeout",
+    "url"
+  ],
+  "wholefoods_search": [
+    "page",
+    "query",
+    "store_id",
+    "timeout"
+  ],
+  "wholefoods_product": [
+    "store_id",
+    "timeout",
+    "url"
+  ],
+  "ikea_search": [
+    "page",
+    "query",
+    "store_id",
+    "timeout"
+  ],
+  "ikea_product": [
+    "store_id",
+    "timeout",
+    "url"
   ]
 }

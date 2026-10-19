@@ -137,15 +137,18 @@ async def _run_one(
 ) -> Result:
     started = time.monotonic()
     try:
+        post = request.method == "POST"
         outcome = await _runtime.request_with_retries(
             client,
             request.path,
-            request.query_params(),
+            {} if post else request.query_params(),
             headers=headers,
             attempts=attempts,
             timeout=timeout,
             semaphore=semaphore,
             gate=lambda: batch.fatal,
+            method=request.method,
+            json_body=request.body() if post else None,
         )
     except asyncio.CancelledError:
         raise
@@ -287,7 +290,9 @@ def scrape(
     ``google_reviews``, ``bing_search``, ``yelp_reviews``, ...); each maps to a request class whose fields
     are that endpoint's query parameters and whose ``path`` is its route. Dicts are validated into the same
     classes, so both forms send identical requests. Unknown parameter names, wrong types, and missing
-    required parameters are rejected locally.
+    required parameters are rejected locally. Most endpoints are sent as ``GET`` with query parameters;
+    classes whose ``method`` is ``POST`` (``web_fetch``, ``web_screenshot``,
+    ``google_shopping_merchant_urls``, ``copilot_chat_completions``) send ``body()`` as JSON instead.
 
     With the default ``batched=False``, before any request is sent:
 
